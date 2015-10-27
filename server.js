@@ -14,48 +14,56 @@ var Db = require('mongodb').Db,
     Server = require('mongodb').Server,
     ObjectId = require('mongodb').ObjectID;
 
-
 var createServer = function(port) {
 
     // app.use(favicon(__dirname + '/favicon.ico'));
     var db = new Db('Cycle', new Server('localhost', 27017));
     var collection = db.collection("testCollection");
 
+    var getDocs = function(db, res, callback) {
+        var cursor = db.collection('testCollection').find();
+        res.set('Content-Type', 'text/html');
 
+        cursor.each(function(err, doc) {
+            if (doc != null) {
+                console.log(doc.text);
+                res.write('<h4>' + doc.text + '</h4><br>')
+            } else {
+                res.end()
+                callback();
+            }
+        });
+    };
 
+    console.log('findRestaurants')
 
     app.get('/', function(req, res) {
 
-        res.set('Content-Type', 'text/html');
-
-        res.send('<h4>DATA:<br>' + JSON.parasecollection.find({}).toString() + '</h4>');
-        db.close();
-
-
-    })
+        db.open(function(err, db) {
+            getDocs(db, res, function() {
+                db.close();
+            });
+        })
+    });
 
     app.get('/api/insert/:text', function(req, res) {
-
-        var text = req.params.text.toString();
-        console.log(text);
-
+        var text = req.params.text;
+        // Fetch a collection to insert document into
         db.open(function(err, db) {
             // Insert a single document
-            // console.log(text.toString());
+            console.log(text.toString());
+
             collection.insert({
                 text: text.toString()
             }, function(err, docsInserted) {
                 db.close();
                 // get last id
                 res.send(docsInserted.ops[0]._id);
+
             });
 
         });
-
-
     });
-
-
 
     app.use('/static/', express.static(path.join(__dirname, 'public')));
 
