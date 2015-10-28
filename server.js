@@ -35,10 +35,7 @@ var createServer = function(port) {
         });
     };
 
-    console.log('findRestaurants')
-
     app.get('/', function(req, res) {
-
         db.open(function(err, db) {
             getDocs(db, res, function() {
                 db.close();
