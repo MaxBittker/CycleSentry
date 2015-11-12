@@ -35,13 +35,15 @@ var createServer = function(port) {
         });
     };
 
-    app.get('/', function(req, res) {
+    app.get('/api/getText', function(req, res) {
         db.open(function(err, db) {
             getDocs(db, res, function() {
                 db.close();
             });
         })
     });
+
+
 
     app.get('/api/insert/:text', function(req, res) {
         var text = req.params.text;
@@ -62,7 +64,7 @@ var createServer = function(port) {
         });
     });
 
-    app.use('/static/', express.static(path.join(__dirname, 'public')));
+    app.use('/', express.static(path.join(__dirname, 'public')));
 
     var server = app.listen(port, function() {
 
