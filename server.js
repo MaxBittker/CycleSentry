@@ -18,32 +18,28 @@ var createServer = function(port) {
 
     // app.use(favicon(__dirname + '/favicon.ico'));
     var db = new Db('Cycle', new Server('localhost', 27017));
+
     var collection = db.collection("testCollection");
 
-    var getDocs = function(db, res, callback) {
-        var cursor = db.collection('testCollection').find();
-        res.set('Content-Type', 'text/html');
-
-        cursor.each(function(err, doc) {
-            if (doc != null) {
-                console.log(doc.text);
-                res.write('<h4>' + doc.text + '</h4><br>')
-            } else {
+    var getDocCount = function(db, res, callback) {
+        collection.count({}, (error, count) => {
+            if (!error) {
+                res.set('Content-Type', 'text/html');
+                // console.log(cursor.count())
+                res.write('<h4>' + count + '</h4><br>')
                 res.end()
-                callback();
+                callback()
             }
-        });
+        })
     };
 
     app.get('/api/getText', function(req, res) {
         db.open(function(err, db) {
-            getDocs(db, res, function() {
+            getDocCount(db, res, function() {
                 db.close();
             });
         })
     });
-
-
 
     app.get('/api/insert/:text', function(req, res) {
         var text = req.params.text;
@@ -55,9 +51,12 @@ var createServer = function(port) {
             collection.insert({
                 text: text.toString()
             }, function(err, docsInserted) {
+                if (!err) {
+                    res.send(docsInserted.ops[0]._id);
+                }
+
                 db.close();
                 // get last id
-                res.send(docsInserted.ops[0]._id);
 
             });
 

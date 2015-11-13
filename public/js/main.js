@@ -1,11 +1,7 @@
 $('#incBut').click(function() {
-    $.ajax({
-        type: "POST",
-        url: "localhost:8080/api/insert/:text",
-        data: '1',
-        // success: success,
-        // dataType: dataType
-    }).then(function(response) {
+    var text = new Date().getMilliseconds();
+    console.log(text)
+    $.ajax("/api/insert/" + text).then(function(response) {
         console.log(response);
         updateData()
     });
@@ -13,7 +9,7 @@ $('#incBut').click(function() {
 
 
 function updateData() {
-	console.log('updating')
+    console.log('updating')
 
     $.ajax({
         type: "GET",
@@ -26,4 +22,4 @@ function updateData() {
 }
 updateData()
 
-setInterval(updateData, 500)
+setInterval(updateData, 1500)
