@@ -11,70 +11,96 @@ var express = require('express'),
     fs = require('fs');
 
 var Db = require('mongodb').Db,
-    Server = require('mongodb').Server,
+    Client = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID;
 
-var createServer = function(port) {
+var url = 'mongodb://localhost:27017/Cycle'
+var db
 
-    // app.use(favicon(__dirname + '/favicon.ico'));
-    var db = new Db('Cycle', new Server('localhost', 27017));
+var start = function(port, done) {
+    if (!done) {
+        done = () => console.log('\n')
+    }
+    Client.connect(url, function(err, retDB) {
+        if (err) throw err
 
-    var collection = db.collection("testCollection");
+        db = retDB
+        console.log('connected to mongo')
+        createServer(port, done)
+    })
+}
 
-    var getDocCount = function(db, res, callback) {
-        collection.count({}, (error, count) => {
-            if (!error) {
-                res.set('Content-Type', 'text/html');
-                // console.log(cursor.count())
-                res.write('<h4>' + count + '</h4><br>')
-                res.end()
-                callback()
-            }
-        })
-    };
+var createServer = function(port, done) {
 
-    app.get('/api/getText', function(req, res) {
-        db.open(function(err, db) {
-            getDocCount(db, res, function() {
-                db.close();
-            });
+
+    var userCollection = db.collection("users");
+
+
+    app.get('/api/listUsers', function(req, res) {
+        userCollection.find({}, function(err, docs) {
+            res.set('Content-Type', 'text/html');
+
+            docs.each(function(err, doc) {
+                if (doc !== null) {
+                    console.log(doc)
+                    res.write('<h4>' + doc.name + doc.signedIn + '</h4><br>')
+                } else
+                    res.end()
+
+            })
         })
     });
 
-    app.get('/api/insert/:text', function(req, res) {
-        var text = req.params.text;
-        // Fetch a collection to insert document into
-        db.open(function(err, db) {
-            // Insert a single document
-            console.log(text.toString());
+    app.get('/api/insertUser/:name', function(req, res) {
+        var name = req.params.name;
+        // Insert a single document
+        console.log(name.toString());
 
-            collection.insert({
-                text: text.toString()
-            }, function(err, docsInserted) {
-                if (!err) {
-                    res.send(docsInserted.ops[0]._id);
-                }
-
-                db.close();
-                // get last id
-
-            });
+        userCollection.insert({
+            name: name.toString(),
+            signedIn: 0
+        }, function(err, docsInserted) {
+            if (!err) {
+                res.send(docsInserted.ops[0]._id);
+            }
 
         });
+
+    });
+
+    app.get('/api/signUser/:name/:state', function(req, res) {
+        var name = req.params.name.toString();
+        var newState = req.params.state.toString();
+
+        // Insert a single document
+
+        userCollection.update({
+            name: name,
+        }, {
+            $set: {
+                signedIn: newState
+            }
+        }, function(err, results) {
+
+            if (err) throw err
+            else {
+                res.send(JSON.parse(results).n.toString());
+            }
+        })
+
     });
 
     app.use('/', express.static(path.join(__dirname, 'public')));
 
-    var server = app.listen(port, function() {
+    var server = app.listen(port, () => {
 
         var host = server.address().address;
         var port = server.address().port;
 
         console.log('CycleSentry listening at http://%s:%s', host, port);
-
+        done()
     });
 };
 
-module.exports = createServer;
-
-createServer(8080)
+module.exports = start;
+// start(8080)
