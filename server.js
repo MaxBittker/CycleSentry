@@ -14,18 +14,29 @@ var Db = require('mongodb').Db,
     Client = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID;
 
-var url = 'mongodb://localhost:27017/Cycle'
+var url = 'mongodb://localhost:27017/'
 var db
 
-var start = function(port, done) {
+var start = function(port, dbName, done) {
     if (!done) {
         done = () => console.log('\n')
     }
-    Client.connect(url, function(err, retDB) {
+
+    if (!dbName) {
+        dbName = 'Cycle'
+    }
+
+    Client.connect(url + dbName, function(err, retDB) {
         if (err) throw err
+        console.log('connected to mongo')
 
         db = retDB
-        console.log('connected to mongo')
+
+        if (dbName === 'test') {
+            db.dropCollection("users", function(err, result) {
+                console.log("dropped db  for testing: " + result)
+            })
+        }
         createServer(port, done)
     })
 }
@@ -33,7 +44,7 @@ var start = function(port, done) {
 var createServer = function(port, done) {
 
 
-    var userCollection = db.collection("users");
+    var userCollection = db.collection('users');
 
 
     app.get('/api/listUsers', function(req, res) {
@@ -43,7 +54,7 @@ var createServer = function(port, done) {
             docs.each(function(err, doc) {
                 if (doc !== null) {
                     console.log(doc)
-                    res.write('<h4>' + doc.name + doc.signedIn + '</h4><br>')
+                    res.write('<h4>' + doc.toString() + '</h4><br>')
                 } else
                     res.end()
 
@@ -51,13 +62,16 @@ var createServer = function(port, done) {
         })
     });
 
-    app.get('/api/insertUser/:name', function(req, res) {
-        var name = req.params.name;
+    app.get('/api/insertUser/:ID/:name', function(req, res) {
+        var id = req.params.ID.toString();
+        var name = req.params.name.toString();
+
         // Insert a single document
-        console.log(name.toString());
+        console.log(name);
 
         userCollection.insert({
-            name: name.toString(),
+            id: id,
+            name: name,
             signedIn: 0
         }, function(err, docsInserted) {
             if (!err) {
@@ -68,14 +82,14 @@ var createServer = function(port, done) {
 
     });
 
-    app.get('/api/signUser/:name/:state', function(req, res) {
-        var name = req.params.name.toString();
-        var newState = req.params.state.toString();
+    app.get('/api/signUser/:ID/:state', function(req, res) {
+        var id = req.params.ID.toString();
+        var newState = req.params.state;
 
         // Insert a single document
 
         userCollection.update({
-            name: name,
+            id: id, //TODO: look into enforcing uniqeness
         }, {
             $set: {
                 signedIn: newState
@@ -86,6 +100,22 @@ var createServer = function(port, done) {
             else {
                 res.send(JSON.parse(results).n.toString());
             }
+        })
+
+    });
+
+    app.get('/api/getUserInfo/:ID', function(req, res) {
+        var id = req.params.ID.toString();
+
+        userCollection.findOne({
+            id: id,
+        }, function(err, doc) {
+            if (err) throw err
+            else {
+                res.set('Content-Type', 'text/JSON');
+                res.send(JSON.stringify(doc));
+            }
+
         })
 
     });
@@ -104,3 +134,4 @@ var createServer = function(port, done) {
 
 module.exports = start;
 // start(8080)
+
