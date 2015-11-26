@@ -1,22 +1,27 @@
 $('#incBut').click(function() {
-    var text = new Date().getMilliseconds();
-    console.log(text)
-    $.ajax("/api/insert/" + text).then(function(response) {
+    var name = $('#nameInput').val()
+    var ID = $('#IDInput').val()
+
+    console.log(name, ID)
+    $.ajax("/api/insertUser/" + ID + '/' + name).then(function(response) {
         console.log(response);
         updateData()
     });
 })
-
+var UserTemplate = _.template("<%= name %>&emsp;  <% print(signedIn? 'Yes': 'No') %><br>");
 
 function updateData() {
-    console.log('updating')
+    // console.log('updating')
 
     $.ajax({
         type: "GET",
-        url: "/api/getText",
+        url: "/api/listUsers",
         context: document.body
     }).then(function(data) {
-        $('#data').html(data);
+        // console.log(data)
+        var UserString = ""
+        JSON.parse(data).map(user => UserString += UserTemplate(user))
+        $('#data').html(UserString);
     });
 
 }

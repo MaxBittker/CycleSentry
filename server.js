@@ -50,13 +50,18 @@ var createServer = function(port, done) {
     app.get('/api/listUsers', function(req, res) {
         userCollection.find({}, function(err, docs) {
             res.set('Content-Type', 'text/html');
-
+            // res.write("[")
+            // console.log(docs.toArray())
+            var userArray = []
             docs.each(function(err, doc) {
                 if (doc !== null) {
-                    console.log(doc)
-                    res.write('<h4>' + doc.toString() + '</h4><br>')
-                } else
-                    res.end()
+                    // console.log(doc)
+                    userArray.push(doc)
+                    // res.write(JSON.stringify(doc))
+                } else {
+                    // res.write("]")
+                    res.send(JSON.stringify(userArray))
+                }
 
             })
         })
@@ -134,4 +139,3 @@ var createServer = function(port, done) {
 
 module.exports = start;
 // start(8080)
-

@@ -30,14 +30,20 @@
         <div class="main wrapper clearfix">
             <article>
                 <header>
-                    <h1>Server State:</h1>
+                    <h1>Users:</h1>
+                    <h4>Name  Signed in</h4>
                     <div id='data'></div>
                     </footer>
             </article>
             <aside>
-                <!-- <h3>aside</h3> -->
-                <p></p>
-                <button id='incBut' style="color: #000">Press Me to Increment Counter</button>
+                <h3>Add User</h3>
+                <p><span class="inputLabel">Name:</span>
+                    <input type="text" id="nameInput" name="Name" value="exampleUser">
+                </p>
+                <p><span class="inputLabel">ID:</span>
+                    <input type="text" id="IDInput" name="ID" value="12345">
+                </p>
+                <button id='incBut' style="color: #000">Add User</button>
             </aside>
         </div>
         <!-- #main -->
@@ -48,6 +54,7 @@
             <h3>CMPE 498</h3>
         </footer>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script>
     window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')
