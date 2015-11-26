@@ -43,6 +43,8 @@ MONGO:
 - historical info - analytics and info to user
 - how many days in a row did you bike to campus??
 
+	** TODO: update mongo to reflect the new data structure and populate
+
 
 What does the app do?
 - DISPLAYS info FROM server   (a whole bunch of json strings)
