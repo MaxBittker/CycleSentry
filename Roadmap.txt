@@ -1,0 +1,66 @@
+CycleSentry Data Movement
+
+RFID -> Server :
+
+What does the RFID module do?
+- report tags seen (ie. phone tags, bike tags)
+- ie rackID, {timestamp?, tagID: rising/falling bit}
+
+
+Server <-> App :
+
+What does the server do?
+- SENDS info to app (see info under app DISPLAY)
+	- sometimes just basic
+	- sometimes calculated (calc every send, or calc & store & update?)
+
+- THINK
+	- what bikes are signed in where
+	- that bike is being stolen! (notify app)
+
+- ADMIN	(password protected area)
+	- register a new user
+	- see list of users
+	- update/add tags for users
+	
+- SHOW a pretty front end with tabs
+	- info on the project
+	- analytics
+	- admin (see above)
+	
+	
+MONGO:
+- users: {UID, name, phoneNo, address, role, password}
+- tags: {UID, TagID, type = bike, nickname, currState: {RackID or -1(not signed in anywhere) or MIA, timestamp}} -> timestamp of the CHANGE
+		{UID, TagID, type = keychain, nickname, currState: {rackID, timestamp}}  -> timestamp when seen
+
+- racks: {RackID, name, ??}
+
+- RFIDinfo: {connor sends us} -> parse 
+	- ie. {timestamp, keychainID, 
+	- {how we want to store that}
+
+- historical info - analytics and info to user
+- how many days in a row did you bike to campus??
+
+
+What does the app do?
+- DISPLAYS info FROM server   (a whole bunch of json strings)
+	- where/if signed in
+	- push notifications for stolen bike
+	- ???
+	- commonly used racks
+	- ???
+	
+	** TODO: make list of app displays and api calls for those
+	
+- SENDS info TO server		(also json strings)	
+	- signing in/signing out
+	- notification responses: that was me/that was a theft
+	- ???
+	- "my bike was stolen"
+	
+- OTHER:
+	- allows users to contact campus security
+	- ???
+
