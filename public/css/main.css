@@ -13,11 +13,16 @@ html {
 
 aside input {
     color: #000;
-    max-width: 70%;
+    width: 70%;
+    /*margin-left: 50px*/
+    /*display: inline;*/
+    float: right;
 }
 
 .inputLabel {
-    width: 150px;
+    display: inline;
+    /*margin-right: 0px;*/
+    /*width: 15px;*/
 }
 
 ::-moz-selection {
