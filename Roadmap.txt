@@ -48,21 +48,19 @@ MONGO:
 
 What does the app do?
 - DISPLAYS info FROM server   (a whole bunch of json strings)
-	- where/if signed in
+	- current conditions: list of racks (name, # bikes locked, someway to get utilization - total spots or %)
+	- my stats: average bike lock session duration, time locked today  (server side calc - open to change)
+	- my tags: list of tags (ie. just the tag documents)
 	- push notifications for stolen bike
-	- ???
-	- commonly used racks
-	- ???
+	- somewhere displaying current status (ie. bike locked at dunning)
 	
-	** TODO: make list of app displays and api calls for those
+	** TODO: make list of api calls for those
 	
 - SENDS info TO server		(also json strings)	
-	- signing in/signing out
+	- signing in/signing out (app already has list of racks and where/if signed in)
 	- notification responses: that was me/that was a theft
-	- ???
-	- "my bike was stolen"
 	
 - OTHER:
 	- allows users to contact campus security
-	- ???
+	- about/feedback/bug  (later!)
 
