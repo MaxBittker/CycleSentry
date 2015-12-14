@@ -36,6 +36,9 @@ var start = function(port, dbName, done) {
             db.dropCollection("users", function(err, result) {
                 console.log("dropped db  for testing: " + result)
             })
+            db.dropCollection("tags", function(err, result) {
+                console.log("dropped db  for testing: " + result)
+            })
         }
         createServer(port, done)
     })
@@ -45,7 +48,7 @@ var createServer = function(port, done) {
 
 
     var userCollection = db.collection('users');
-
+    var tagCollection = db.collection('tags');
 
     app.get('/api/listUsers', function(req, res) {
         userCollection.find({}, function(err, docs) {
@@ -57,7 +60,7 @@ var createServer = function(port, done) {
                 if (doc !== null) {
                     // console.log(doc)
                     userArray.push(doc)
-                    // res.write(JSON.stringify(doc))
+                        // res.write(JSON.stringify(doc))
                 } else {
                     // res.write("]")
                     res.send(JSON.stringify(userArray))
@@ -67,17 +70,22 @@ var createServer = function(port, done) {
         })
     });
 
-    app.get('/api/insertUser/:ID/:name', function(req, res) {
-        var id = req.params.ID.toString();
+    app.get('/api/insertUser/:UID/:name/:password', function(req, res) {
+        var id = req.params.UID.toString();
         var name = req.params.name.toString();
+        var pword = req.params.password.toString();
 
         // Insert a single document
-        console.log(name);
-
+        // console.log(name);
+        var pnumber = "123456789"
+        var address = "123 street"
+            // console.log(pword?)
         userCollection.insert({
-            id: id,
+            UID: id,
             name: name,
-            signedIn: 0
+            phonenumber: pnumber,
+            address: address,
+            password: pword
         }, function(err, docsInserted) {
             if (!err) {
                 res.send(docsInserted.ops[0]._id);
@@ -87,17 +95,45 @@ var createServer = function(port, done) {
 
     });
 
-    app.get('/api/signUser/:ID/:state', function(req, res) {
-        var id = req.params.ID.toString();
-        var newState = req.params.state;
+    app.get('/api/insertTag/:UID/:TagID/:type/:name', function(req, res) {
+        var uid = req.params.UID.toString();
+        var tid = req.params.TagID.toString();
+        var type = req.params.type.toString();
+        var name = req.params.name.toString();
 
         // Insert a single document
 
-        userCollection.update({
+        tagCollection.insert({
+            UID: uid,
+            TagID: tid,
+            type: type,
+            name: name,
+            state: {
+                location: -1,
+                timestamp: Date.now()
+            }
+        }, function(err, docsInserted) {
+            if (!err) {
+                res.send(docsInserted.ops[0]._id);
+            }
+
+        });
+
+    });
+
+    app.get('/api/updateTag/:TagID/:state', function(req, res) {
+        var id = req.params.TagID.toString();
+        var newState = req.params.state;
+        //var rackID = 1 // Insert a single document
+
+        tagCollection.update({
             id: id, //TODO: look into enforcing uniqeness
         }, {
             $set: {
-                signedIn: newState
+                state: {
+                    location: newState,
+                    timestamp: Date.now()
+                }
             }
         }, function(err, results) {
 
@@ -109,18 +145,40 @@ var createServer = function(port, done) {
 
     });
 
-    app.get('/api/getUserInfo/:ID', function(req, res) {
-        var id = req.params.ID.toString();
+    app.get('/api/getUserInfo/:UID', function(req, res) {
+        var UID = req.params.UID;
 
+        res.set('Content-Type', 'text/JSON');
         userCollection.findOne({
-            id: id,
+            UID: UID,
         }, function(err, doc) {
             if (err) throw err
             else {
-                res.set('Content-Type', 'text/JSON');
-                res.send(JSON.stringify(doc));
-            }
+                tagCollection.find({
+                    UID: UID,
+                }, function(err, docs) {
 
+                    var tags = []
+                    if (err) throw err
+
+                    docs.each(function(err, tagdoc) {
+
+                        if (tagdoc !== null) {
+                            tags.push(tagdoc)
+                        } else {
+
+                            var retObj = {
+                                UID: UID,
+                                name: doc.name,
+                                tagInfo: tags
+                            }
+
+                            res.send(JSON.stringify(retObj));
+
+                        }
+                    })
+                })
+            }
         })
 
     });

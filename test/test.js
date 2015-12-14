@@ -14,7 +14,7 @@ describe('/api/insert/', function() {
     });
 
     it('inserts doc', function(done) {
-        superagent.get('http://localhost:3000/api/insertUser/123/testuser').end(function(err, res) {
+        superagent.get('http://localhost:3000/api/insertUser/123/testuser/qwerty').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
@@ -22,52 +22,73 @@ describe('/api/insert/', function() {
             done();
         });
     });
-    // it('list users', function(done) {
-    //     superagent.get('http://localhost:3000/api/listUsers').end(function(err, res) {
-    //         assert.ifError(err);
-    //         assert.equal(res.status, status.OK);
-    //         // console.log(res.text);
-    //         assert(res.text.indexOf("testing1230") > 0);
-    //         done();
-    //     });
-    // });
-    it('user info is correct before change', function(done) {
+
+    it('user info is correct after creation', function(done) {
         superagent.get('http://localhost:3000/api/getUserInfo/123').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
             var retobj = JSON.parse(res.text)
-            assert.equal(retobj.id, "123");
+                // console.log(retobj)
+            assert.equal(retobj.UID, "123");
             assert.equal(retobj.name, "testuser");
-            assert.equal(retobj.signedIn, '0');
+            // assert.equal(retobj.password, "qwerty");
+            // assert.equal(retobj.state.location, '-1');
 
             done();
         });
     });
-    it('update record to status 1', function(done) {
-        superagent.get('http://localhost:3000/api/signUser/123/1').end(function(err, res) {
+
+    it('insert tag', function(done) {
+        superagent.get('http://localhost:3000/api/insertTag/123/456/bike/cooltag').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
-            assert.equal(res.text, '1');
+            assert(res.text.length !== 0);
             done();
         });
     });
 
-    it('status was changed to 1', function(done) {
+    it('user info is correct after tag is added', function(done) {
         superagent.get('http://localhost:3000/api/getUserInfo/123').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
-
+            // console.log(res.text);
             var retobj = JSON.parse(res.text)
-            assert.equal(retobj.id, "123");
+            console.log(retobj)
+            assert.equal(retobj.UID, "123");
             assert.equal(retobj.name, "testuser");
-            assert.equal(retobj.signedIn, '1');
+            // assert.equal(retobj.password, "qwerty");
+            // assert.equal(retobj.state.location, '-1');
 
             done();
         });
     });
 
+    /*    it('update record to status 1', function(done) {
+            superagent.get('http://localhost:3000/api/signUser/123/1').end(function(err, res) {
+                assert.ifError(err);
+                assert.equal(res.status, status.OK);
+                // console.log(res.text);
+                assert.equal(res.text, '1');
+                done();
+            });
+        });
+
+        it('status was changed to 1', function(done) {
+            superagent.get('http://localhost:3000/api/getUserInfo/123').end(function(err, res) {
+                assert.ifError(err);
+                assert.equal(res.status, status.OK);
+
+                var retobj = JSON.parse(res.text)
+                assert.equal(retobj.id, "123");
+                assert.equal(retobj.name, "testuser");
+                assert.equal(retobj.signedIn, '1');
+
+                done();
+            });
+        });
+    */
     // it('serves /', function(done) {
     //     superagent.get('http://localhost:3000/').end(function(err, res) {
     //         assert.ifError(err);
