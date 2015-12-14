@@ -1,0 +1,28 @@
+Basic mongo:
+
+Collections
+users: {UID,		uniqueID int
+		name,		string
+		phoneNo,	string
+		address,	string
+		password}	string
+
+{123, "Max Brown", "613-111-1111", "123 Main St", "user", "password"}
+
+tags: 	{UID,		uniqueID int from users
+		TagID,		uniqueID int
+		type,		bike, fob (ie. keychain fob, phone fob)
+		nickname,	user-assigned string name (can this be changed from app??)
+		currState} 	json of info, specific to tag type
+		
+		currState:
+			bike: 	{locInfo,	RackID or -1(not signed in) or -2(MIA) 
+					timestamp}	timestamp of when it was updated/changed
+					
+			fob: 	{rackID,	rack where fob was last seen
+					timestamp}  timestamp when seen
+
+		
+racks: {RackID,		uniqueID int
+		name,		ie. ILC Main Rack, Walter Light Front Steps
+		??}

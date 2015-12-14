@@ -51,10 +51,17 @@ What does the app do?
 	- current conditions: list of racks (name, # bikes locked, someway to get utilization - total spots or %)
 	- my stats: average bike lock session duration, time locked today  (server side calc - open to change)
 	- my tags: list of tags (ie. just the tag documents)
-	- push notifications for stolen bike
-	- somewhere displaying current status (ie. bike locked at dunning)
+	- push notifications for stolen bike (???)
+	- displaying current status (ie. bike locked at dunning - from my tags)
 	
 	** TODO: make list of api calls for those
+	
+API calls:
+	- 
+	- 
+	- 
+	- 
+	- 
 	
 - SENDS info TO server		(also json strings)	
 	- signing in/signing out (app already has list of racks and where/if signed in)
