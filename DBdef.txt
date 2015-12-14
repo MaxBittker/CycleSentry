@@ -26,3 +26,5 @@ tags: 	{UID,		uniqueID int from users
 racks: {RackID,		uniqueID int
 		name,		ie. ILC Main Rack, Walter Light Front Steps
 		??}
+		
+For now, RackID will just be the rack name, can later do logic on that

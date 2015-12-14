@@ -50,18 +50,19 @@ What does the app do?
 - DISPLAYS info FROM server   (a whole bunch of json strings)
 	- current conditions: list of racks (name, # bikes locked, someway to get utilization - total spots or %)
 	- my stats: average bike lock session duration, time locked today  (server side calc - open to change)
-	- my tags: list of tags (ie. just the tag documents)
 	- push notifications for stolen bike (???)
+	
+	- my tags: list of tags (ie. just the tag documents)
 	- displaying current status (ie. bike locked at dunning - from my tags)
 	
 	** TODO: make list of api calls for those
 	
 API calls:
-	- 
-	- 
-	- 
-	- 
-	- 
+	- getUserInfo(UID) -> returns name + list of tags and status
+	- updateTag(TagID, state) -> makes a timestamp, may need to get sent if delay
+	
+	- getRackInfo -> will return current conditions
+	- getStats -> will return my stats
 	
 - SENDS info TO server		(also json strings)	
 	- signing in/signing out (app already has list of racks and where/if signed in)
