@@ -134,7 +134,7 @@ var createServer = function(port, done) {
         //var rackID = 1 // Insert a single document
         console.log(id,newState)
         tagCollection.update({
-            id: id, //TODO: look into enforcing uniqeness
+            TagID: id, //TODO: look into enforcing uniqeness
         }, {
             $set: {
                 state: {
@@ -143,7 +143,7 @@ var createServer = function(port, done) {
                 }
             }
         }, function(err, results) {
-        console.log(id,results)
+        console.log(results)
 
             if (err) throw err
             else {
