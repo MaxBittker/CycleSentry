@@ -55,7 +55,7 @@ describe('/api/insert/', function() {
             assert.equal(res.status, status.OK);
             // console.log(res.text);
             var retobj = JSON.parse(res.text)
-            console.log(retobj)
+            // console.log(retobj.)
             assert.equal(retobj.UID, "123");
             assert.equal(retobj.name, "testuser");
             // assert.equal(retobj.password, "qwerty");
@@ -65,30 +65,32 @@ describe('/api/insert/', function() {
         });
     });
 
-    /*    it('update record to status 1', function(done) {
-            superagent.get('http://localhost:3000/api/signUser/123/1').end(function(err, res) {
-                assert.ifError(err);
-                assert.equal(res.status, status.OK);
-                // console.log(res.text);
-                assert.equal(res.text, '1');
-                done();
-            });
+    it('update tagstatus to 1', function(done) {
+        superagent.get('http://localhost:3000/api/updateTag/456/1').end(function(err, res) {
+            assert.ifError(err);
+            assert.equal(res.status, status.OK);
+            // console.log(res.text);
+            assert.equal(res.text, '1');
+            done();
         });
+    });
 
-        it('status was changed to 1', function(done) {
-            superagent.get('http://localhost:3000/api/getUserInfo/123').end(function(err, res) {
-                assert.ifError(err);
-                assert.equal(res.status, status.OK);
+    it('status was changed to 1', function(done) {
+        superagent.get('http://localhost:3000/api/getUserInfo/123').end(function(err, res) {
+            assert.ifError(err);
+            assert.equal(res.status, status.OK);
 
-                var retobj = JSON.parse(res.text)
-                assert.equal(retobj.id, "123");
-                assert.equal(retobj.name, "testuser");
-                assert.equal(retobj.signedIn, '1');
+            var retobj = JSON.parse(res.text)
+            assert.equal(retobj.UID, "123");
+            assert.equal(retobj.tagInfo[0].state.location, "1");
 
-                done();
-            });
+            assert.equal(retobj.name, "testuser");
+            // assert.equal(retobj.signedIn, '1');
+
+            done();
         });
-    */
+    });
+
     // it('serves /', function(done) {
     //     superagent.get('http://localhost:3000/').end(function(err, res) {
     //         assert.ifError(err);
