@@ -50,6 +50,13 @@ var createServer = function(port, done) {
     var userCollection = db.collection('users');
     var tagCollection = db.collection('tags');
 
+    app.get('/api/echo/:text', function(req, res) {
+        var echo = req.params.text.toString();
+        console.log(echo)
+        res.set('Content-Type', 'text/html');
+        res.send(echo)
+    });
+
     app.get('/api/listUsers', function(req, res) {
         userCollection.find({}, function(err, docs) {
             res.set('Content-Type', 'text/html');
