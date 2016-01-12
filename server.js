@@ -1,7 +1,7 @@
 var express = require('express'),
     app = express(),
     path = require('path'),
-    // request = require('request'),
+    request = require('request'),
     _ = require('underscore'),
     // child_process = require('child_process'),
     hostname = process.env.HOSTNAME || 'localhost',
@@ -49,6 +49,33 @@ var createServer = function(port, done) {
 
     var userCollection = db.collection('users');
     var tagCollection = db.collection('tags');
+    
+    app.get('/api/sendPush/:UID', function(req, res) {
+        var requestData = {
+            "channels": [
+                "uid".concat(req.params.UID.toString())
+            ],
+            "data": {
+                "alert": "Your bike has disconnected from the RFID reader."
+            }
+        };
+
+        request({
+            url: 'https://api.parse.com/1/push',
+            method: "POST",
+            headers: {
+                "X-Parse-Application-Id": "qoCsCcYiHVhEoile0PQ8PWOrqL5ZNpLOX53haQ7T",
+                "X-Parse-REST-API-Key": "Vfl47NWaqpnTOLqysV2kHi90PbYKPyKzHsvgBnj0",
+                "Content-Type": "application/json"
+            },
+            json: true,
+            body: requestData
+        }, function(error, response, body) {
+            if (error == null) {
+                res.send("ok");
+            }
+        });
+    });
 
     app.get('/api/echo/:text', function(req, res) {
         var echo = req.params.text.toString();
