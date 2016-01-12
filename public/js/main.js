@@ -8,6 +8,16 @@ $('#incBut').click(function() {
         updateData()
     });
 })
+
+$('#sendPushBtn').click(function() {
+    var ID = $('#pushIdInput').val();
+
+    console.log(ID);
+    $.ajax("/api/sendPush/" + ID).then(function(response) {
+        console.log(response);
+    });
+})
+
 var UserTemplate = _.template("<%= name %>&emsp;  <% print(signedIn? 'Yes': 'No') %><br>");
 
 function updateData() {

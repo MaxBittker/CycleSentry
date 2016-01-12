@@ -22,7 +22,8 @@
         "path": "*",
         "underscore": "*",
         "mongodb": "*",
-        "assert": "*"
+        "assert": "*",
+		"request": "*"
     },
     "author": "",
     "license": "ISC",
