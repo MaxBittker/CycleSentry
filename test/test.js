@@ -10,11 +10,11 @@ var app = -1;
 describe('/api/insert/', function() {
 
     before(function(done) {
-        app = server(3000, "test", done);
+        app = server(3333, "test", done);
     });
 
     it('inserts doc', function(done) {
-        superagent.get('http://localhost:3000/api/insertUser/123/testuser/qwerty').end(function(err, res) {
+        superagent.get('http://localhost:3333/api/insertUser/123/testuser/qwerty').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
@@ -24,7 +24,7 @@ describe('/api/insert/', function() {
     });
 
     it('user info is correct after creation', function(done) {
-        superagent.get('http://localhost:3000/api/getUserInfo/123').end(function(err, res) {
+        superagent.get('http://localhost:3333/api/getUserInfo/123').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
@@ -40,7 +40,7 @@ describe('/api/insert/', function() {
     });
 
     it('insert tag', function(done) {
-        superagent.get('http://localhost:3000/api/insertTag/123/456/bike/cooltag').end(function(err, res) {
+        superagent.get('http://localhost:3333/api/insertTag/123/456/bike/cooltag').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
@@ -50,7 +50,7 @@ describe('/api/insert/', function() {
     });
 
     it('user info is correct after tag is added', function(done) {
-        superagent.get('http://localhost:3000/api/getUserInfo/123').end(function(err, res) {
+        superagent.get('http://localhost:3333/api/getUserInfo/123').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
@@ -65,7 +65,7 @@ describe('/api/insert/', function() {
         });
     });
     it('get location info', function(done) {
-        superagent.get('http://localhost:3000/api/getLocationInfo').end(function(err, res) {
+        superagent.get('http://localhost:3333/api/getLocationInfo').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
@@ -76,7 +76,7 @@ describe('/api/insert/', function() {
     });
 
     it('update tagstatus to 1', function(done) {
-        superagent.get('http://localhost:3000/api/updateTag/456/1').end(function(err, res) {
+        superagent.get('http://localhost:3333/api/updateTag/456/1').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
@@ -86,7 +86,7 @@ describe('/api/insert/', function() {
     });
 
     it('status was changed to 1', function(done) {
-        superagent.get('http://localhost:3000/api/getUserInfo/123').end(function(err, res) {
+        superagent.get('http://localhost:3333/api/getUserInfo/123').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
 
@@ -102,7 +102,7 @@ describe('/api/insert/', function() {
     });
 
     it('check location info changed after tag checks in', function(done) {
-        superagent.get('http://localhost:3000/api/getLocationInfo').end(function(err, res) {
+        superagent.get('http://localhost:3333/api/getLocationInfo').end(function(err, res) {
             assert.ifError(err);
             assert.equal(res.status, status.OK);
             // console.log(res.text);
@@ -112,7 +112,7 @@ describe('/api/insert/', function() {
         });
     });
     // it('serves /', function(done) {
-    //     superagent.get('http://localhost:3000/').end(function(err, res) {
+    //     superagent.get('http://localhost:3333/').end(function(err, res) {
     //         assert.ifError(err);
     //         assert.equal(res.status, status.OK);
     //         // console.log(res.text);
