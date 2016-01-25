@@ -64,6 +64,16 @@ describe('/api/insert/', function() {
             done();
         });
     });
+    it('get location info', function(done) {
+        superagent.get('http://localhost:3000/api/getLocationInfo').end(function(err, res) {
+            assert.ifError(err);
+            assert.equal(res.status, status.OK);
+            // console.log(res.text);
+            var retobj = JSON.parse(res.text)
+            assert.equal(retobj[0].occupancy, '0');
+            done();
+        });
+    });
 
     it('update tagstatus to 1', function(done) {
         superagent.get('http://localhost:3000/api/updateTag/456/1').end(function(err, res) {
@@ -91,6 +101,16 @@ describe('/api/insert/', function() {
         });
     });
 
+    it('check location info changed after tag checks in', function(done) {
+        superagent.get('http://localhost:3000/api/getLocationInfo').end(function(err, res) {
+            assert.ifError(err);
+            assert.equal(res.status, status.OK);
+            // console.log(res.text);
+            var retobj = JSON.parse(res.text)
+            assert.equal(retobj[0].occupancy, '1');
+            done();
+        });
+    });
     // it('serves /', function(done) {
     //     superagent.get('http://localhost:3000/').end(function(err, res) {
     //         assert.ifError(err);

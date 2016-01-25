@@ -1,2 +1,2 @@
 var server = require('./server.js');
-app = server(80);
+app = server(process.argv[2] || 80);

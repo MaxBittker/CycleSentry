@@ -11,7 +11,7 @@ users: {UID,		uniqueID int
 
 tags: 	{UID,		uniqueID int from users
 		TagID,		uniqueID int
-		type,		bike, fob (ie. keychain fob, phone fob)
+		type,		bike, phone, keychain (phone and keychain are equivilent)
 		nickname,	user-assigned string name (can this be changed from app??)
 		currState} 	json of info, specific to tag type
 		

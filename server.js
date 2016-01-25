@@ -49,7 +49,7 @@ var createServer = function(port, done) {
 
     var userCollection = db.collection('users');
     var tagCollection = db.collection('tags');
-    
+
     app.get('/api/sendPush/:UID', function(req, res) {
         var requestData = {
             "channels": [
@@ -214,6 +214,26 @@ var createServer = function(port, done) {
             }
         })
 
+    });
+
+
+    app.get('/api/getLocationInfo/', function(req, res) {
+        //this is faked right now because we only have one location.
+        //it should return an array of all locations.
+        tagCollection.count({
+                "state.location": "1"
+            },
+            function(err, count) {
+
+                if (err) throw err
+
+                res.set('Content-Type', 'text/JSON');
+                res.send(JSON.stringify([{
+                    "locationid": 1,
+                    occupancy: count,
+                    capacity: 1
+                }]))
+            })
     });
 
     app.use('/', express.static(path.join(__dirname, 'public')));
