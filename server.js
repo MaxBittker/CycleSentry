@@ -236,6 +236,14 @@ var createServer = function(port, done) {
             })
     });
 
+    app.get('/api/shouldAlarm/', function(req, res) {
+        //this is faked right now
+        var result = (Math.random() > .95) ? 1 : 0
+        res.set('Content-Type', 'text');
+        res.send(result.toString())
+    });
+
+
     app.use('/', express.static(path.join(__dirname, 'public')));
 
     var server = app.listen(port, () => {
