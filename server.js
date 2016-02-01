@@ -239,7 +239,7 @@ var createServer = function(port, done) {
     app.get('/api/shouldAlarm/', function(req, res) {
         //this is faked right now
         var result = (Math.random() > .95) ? 1 : 0
-        res.set('Content-Type', 'text');
+        res.set('Content-Type', 'text/JSON');
         res.send(result.toString())
     });
 
