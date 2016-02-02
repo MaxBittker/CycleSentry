@@ -1,7 +1,7 @@
 $('#addUser').click(function() {
     var name = $('#nameInput').val()
     var ID = $('#IDInput').val()
-    var PW = $('#PwInput').val()
+    var PW = $('#pwInput').val()
     if (PW && ID && name) {
         $.ajax("/api/insertUser/" + ID + '/' + name + '/' + PW).then(function(response) {
             console.log(response);
