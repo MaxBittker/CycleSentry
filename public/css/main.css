@@ -1,8 +1,8 @@
 /*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
 
 #data {
-    font-size: 2em;
-    line-height: 1.1;
+    /*font-size: 2em;*/
+    /*line-height: 1.1;*/
 }
 
 html {
@@ -11,9 +11,9 @@ html {
     line-height: 1.4;
 }
 
-aside input {
+aside input, aside select {
     color: #000;
-    width: 70%;
+    width: 60%;
     /*margin-left: 50px*/
     /*display: inline;*/
     float: right;

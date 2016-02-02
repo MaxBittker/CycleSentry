@@ -1,12 +1,26 @@
-$('#incBut').click(function() {
+$('#addUser').click(function() {
     var name = $('#nameInput').val()
     var ID = $('#IDInput').val()
+    var PW = $('#PwInput').val()
+    if (PW && ID && name) {
+        $.ajax("/api/insertUser/" + ID + '/' + name + '/' + PW).then(function(response) {
+            console.log(response);
+            updateData()
+        });
+    }
+})
 
-    console.log(name, ID)
-    $.ajax("/api/insertUser/" + ID + '/' + name).then(function(response) {
-        console.log(response);
-        updateData()
-    });
+$('#addTag').click(function() {
+    var name = $('#tagNameInput').val()
+    var UID = $('#tagUIDInput').val()
+    var TID = $('#tagIDInput').val()
+    var type = $('#typeSelect').val()
+    if (type && TID && UID && name) {
+        $.ajax("/api/insertTag/" + UID + '/' + TID + '/' + type + '/' + name).then(function(response) {
+            console.log(response);
+            updateData()
+        });
+    }
 })
 
 $('#sendPushBtn').click(function() {
@@ -18,20 +32,34 @@ $('#sendPushBtn').click(function() {
     });
 })
 
-var UserTemplate = _.template("<%= name %>&emsp;  <% print(signedIn? 'Yes': 'No') %><br>");
+// var UserTemplate = _.template("<%= name %>&emsp; <%= UID %><br>");
+var UserTemplate = _.template("<%= name %>&emsp; <%= UID %> #tags:<%= tagInfo.length%><ul>");
+var TagTemplate = _.template("<li><%= TagID%> <%= name%> <%= state.location%></li>")
 
 function updateData() {
-    // console.log('updating')
+    console.log('updating')
+    $('#data').html("")
 
     $.ajax({
         type: "GET",
         url: "/api/listUsers",
         context: document.body
     }).then(function(data) {
-        // console.log(data)
-        var UserString = ""
-        JSON.parse(data).map(user => UserString += UserTemplate(user))
-        $('#data').html(UserString);
+        JSON.parse(data).forEach(function(user) {
+                $.ajax({
+                    url: "/api/getUserInfo/" + user.UID,
+                    type: "GET",
+                    context: document.body
+                }).then(function(userData) {
+                    // console.log(userData)
+                    $('#data').append(UserTemplate(userData))
+                    userData.tagInfo.forEach(function(tag) {
+                        $('#data').append(TagTemplate(tag))
+                    })
+                    $('#data').append("</ul>")
+
+                })
+            })
     });
 
 }

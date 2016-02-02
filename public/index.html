@@ -35,24 +35,46 @@
                     <div id='data'></div>
                 </header>
             </article>
-                        
             <aside>
+                <!-- insert User -->
+
                 <h3>Add User</h3>
                 <p><span class="inputLabel">Name:</span>
-                    <input type="text" id="nameInput" name="Name" value="exampleUser">
+                    <input type="text" id="nameInput" name="Name" placeholder="exampleUser">
                 </p>
                 <p><span class="inputLabel">ID:</span>
-                    <input type="text" id="IDInput" name="ID" value="12345">
+                    <input type="text" id="IDInput" name="ID" placeholder="12345">
                 </p>
-                <button id='incBut' style="color: #000">Add User</button>
-                
+                <p><span class="inputLabel">Password:</span>
+                    <input type="text" id="pwInput" name="pw" placeholder="password">
+                </p>
+                <button id='addUser' style="color: #000">Add User</button>
+                <!-- insert Tag -->
+                <h3>Add Tag</h3>
+                <p><span class="inputLabel">Tag Name:</span>
+                    <input type="text" id="tagNameInput" name="tagName" placeholder="my bike">
+                </p>
+                <p><span class="inputLabel">User ID:</span>
+                    <input type="text" id="tagUIDInput" name="Name" placeholder="12345">
+                </p>
+                    <p><span class="inputLabel">Tag ID:</span>
+                        <input type="text" id="tagIDInput" name="UID" placeholder="09876">
+                    </p>
+                <p>
+                <span class="inputLabel">Type:</span>
+                    <select  id="typeSelect">
+                        <option value="bike">bike</option>
+                        <option value="fob">fob</option>
+                    </select>
+                </p>
+                <button id='addTag' style="color: #000">Add Tag</button>
+                <!-- Test Push -->
                 <h3>Send Test Push</h3>
                 <p><span class="inputLabel">ID:</span>
-                    <input type="text" id="pushIdInput" name="ID" value="123">
+                    <input type="text" id="pushIdInput" name="ID" placeholder="123">
                 </p>
                 <button id='sendPushBtn' style="color: #000">Send Push</button>
             </aside>
-
         </div>
         <!-- #main -->
     </div>
