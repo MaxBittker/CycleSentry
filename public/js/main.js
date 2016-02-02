@@ -38,13 +38,12 @@ var TagTemplate = _.template("<li><%= TagID%> <%= name%> <%= state.location%></l
 
 function updateData() {
     console.log('updating')
-    $('#data').html("")
-
     $.ajax({
         type: "GET",
         url: "/api/listUsers",
         context: document.body
     }).then(function(data) {
+        $('#data').html("")
         JSON.parse(data).forEach(function(user) {
                 $.ajax({
                     url: "/api/getUserInfo/" + user.UID,
