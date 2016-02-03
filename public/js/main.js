@@ -33,7 +33,7 @@ $('#sendPushBtn').click(function() {
 })
 
 // var UserTemplate = _.template("<%= name %>&emsp; <%= UID %><br>");
-var UserTemplate = _.template("<%= name %>&emsp; <%= UID %> #tags:<%= tagInfo.length%><ul>");
+var UserTemplate = _.template("<%= name %>&emsp; <%= UID %> #tags:<%= tagInfo.length%>");
 var TagTemplate = _.template("<li><%= TagID%> <%= name%> <%= state.location%></li>")
 
 function updateData() {
@@ -43,22 +43,27 @@ function updateData() {
         url: "/api/listUsers",
         context: document.body
     }).then(function(data) {
-        $('#data').html("")
-        JSON.parse(data).forEach(function(user) {
-                $.ajax({
-                    url: "/api/getUserInfo/" + user.UID,
-                    type: "GET",
-                    context: document.body
-                }).then(function(userData) {
-                    // console.log(userData)
-                    $('#data').append(UserTemplate(userData))
-                    userData.tagInfo.forEach(function(tag) {
-                        $('#data').append(TagTemplate(tag))
-                    })
-                    $('#data').append("</ul>")
+        // $('#data').html("")
+        var newContent = ""
+        JSON.parse(data).forEach((user) => {
+            $.ajax({
+                url: "/api/getUserInfo/" + user.UID,
+                type: "GET",
+                context: document.body
+            }).then((userData) => {
+                // console.log(userData)
+                newContent += (UserTemplate(userData))
 
+                // $('#data').append(UserTemplate(userData))
+                userData.tagInfo.forEach(function(tag) {
+                    newContent += (TagTemplate(tag))
+                    $('#data').html(newContent)
+
+                    // $('#data').append(TagTemplate(tag))
                 })
+
             })
+        })
     });
 
 }

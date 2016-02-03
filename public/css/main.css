@@ -4,7 +4,12 @@
     /*font-size: 2em;*/
     /*line-height: 1.1;*/
 }
-
+#data li{
+    margin-left: 30px;
+}
+#data ul{
+    margin-bottom: 30px;
+}
 html {
     color: #222;
     font-size: 1em;
