@@ -60,14 +60,15 @@ var createServer = function(port, done) {
         }, function(err, tagDoc) {
             if (tagDoc.type === "fob") {
                 activeFobs[tagDoc.UID] = tagDoc;
-                setTimeout(tagDoc => {
+                setTimeout(() => {
                     activeFobs[tagDoc.UID] = undefined
                 }, activeDuration);
             } else {
-        		if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob")
+                if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob")
                     return;
                 else {
-                    setTimeout(tagDoc => {
+                    setTimeout(()=>{
+                        console.log(tagDoc)
                         soundAlarm(tagDoc, tagCollection)
                     }, activeDuration);
                 }
@@ -76,6 +77,8 @@ var createServer = function(port, done) {
     }
 
     function soundAlarm(tagDoc) {
+        console.log(tagDoc)
+
         if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob")
             return;
         else {
