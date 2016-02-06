@@ -17,7 +17,7 @@ var Db = require('mongodb').Db,
 var url = 'mongodb://localhost:27017/'
 var db
 var activeFobs = {}
-var activeDuration = 15 * 1000 // milliseconds
+var activeDuration = 8 * 1000 // milliseconds
 var Alarm = false;
 
 var start = function(port, dbName, done) {
@@ -54,22 +54,22 @@ var createServer = function(port, done) {
     var tagCollection = db.collection('tags');
 
     function securityCheck(tID, newState) {
-
         tagCollection.findOne({
             TagID: tID,
         }, function(err, tagDoc) {
+            if(err) throw err
+		
             if (tagDoc.type === "fob") {
                 activeFobs[tagDoc.UID] = tagDoc;
                 setTimeout(() => {
                     activeFobs[tagDoc.UID] = undefined
                 }, activeDuration);
             } else {
-                if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob")
-                    return;
-                else {
-                    setTimeout(()=>{
-                        console.log(tagDoc)
-                        soundAlarm(tagDoc, tagCollection)
+                if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob"){
+			return;
+		}else if (newState === '-1'){
+			setTimeout(()=>{
+                        soundAlarm(tagDoc)
                     }, activeDuration);
                 }
             }
@@ -77,8 +77,6 @@ var createServer = function(port, done) {
     }
 
     function soundAlarm(tagDoc) {
-        console.log(tagDoc)
-
         if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob")
             return;
         else {
