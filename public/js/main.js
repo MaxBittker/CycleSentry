@@ -38,35 +38,50 @@ var TagTemplate = _.template("<li><%= TagID%> <%= name%> <%= state.location%></l
 
 function updateData() {
     console.log('updating')
+    var users = []
+
     $.ajax({
         type: "GET",
         url: "/api/listUsers",
         context: document.body
     }).then(function(data) {
         // $('#data').html("")
-        var newContent = ""
-        JSON.parse(data).forEach((user) => {
+        users = JSON.parse(data).sort((a, b) => a.UID - b.UID)
+
+        var tagInfo = {}
+        var userDataList = []
+        users.forEach((user) => {
             $.ajax({
                 url: "/api/getUserInfo/" + user.UID,
                 type: "GET",
                 context: document.body
             }).then((userData) => {
-                // console.log(userData)
-                newContent += (UserTemplate(userData))
-
-                // $('#data').append(UserTemplate(userData))
+                tagInfo[userData.UID] = []
+                userDataList.push(userData)
                 userData.tagInfo.forEach(function(tag) {
-                    newContent += (TagTemplate(tag))
-                    $('#data').html(newContent)
-
-                    // $('#data').append(TagTemplate(tag))
+                    tagInfo[userData.UID].push(tag)
                 })
+                if (userDataList.length === users.length) {
+                    render(userDataList, tagInfo)
+                }
 
             })
         })
     });
 
 }
+
+function render(userList, tagInfo) {
+    var newContent = ""
+    userList.forEach(user => {
+        newContent += UserTemplate(user)
+        tagInfo[user.UID].forEach(tag => {
+            newContent += TagTemplate(tag)
+        })
+    })
+    $('#data').html(newContent)
+}
+
 updateData()
 
 setInterval(updateData, 1500)
