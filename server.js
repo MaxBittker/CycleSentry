@@ -16,6 +16,9 @@ var Db = require('mongodb').Db,
 
 var url = 'mongodb://localhost:27017/'
 var db
+var activeFobs = {}
+var activeDuration = 15 * 1000 // milliseconds
+var Alarm = false;
 
 var start = function(port, dbName, done) {
     if (!done) {
@@ -50,6 +53,58 @@ var createServer = function(port, done) {
     var userCollection = db.collection('users');
     var tagCollection = db.collection('tags');
 
+    function securityCheck(tID, newState) {
+
+        tagCollection.findOne({
+            TagID: tID,
+        }, function(err, tagDoc) {
+            if (tagDoc.type === "fob") {
+                activeFobs[tagDoc.UID] = tagDoc;
+                setTimeout(tagDoc => {
+                    activeFobs[tagDoc.UID] = undefined
+                }, activeDuration);
+            } else {
+                if (activeFobs[tagDoc.UID].type === "fob")
+                    return;
+                else {
+                    setTimeout(tagDoc => {
+                        soundAlarm(tagDoc, tagCollection)
+                    }, activeDuration);
+                }
+            }
+        })
+    }
+
+    function soundAlarm(tagDoc) {
+        if (activeFobs[tagDoc.UID].type === "fob")
+            return;
+        else {
+            Alarm = true;
+            setTimeout(() => {
+                Alarm = false
+            }, activeDuration * 2);
+
+            tagCollection.update({
+                TagID: tagDoc.TagID, //TODO: look into enforcing uniqeness
+            }, {
+                $set: {
+                    state: {
+                        location: -2,
+                        timestamp: Date.now()
+                    }
+                }
+            }, function(err, results) {
+
+                if (err) throw err
+                else {
+                    console.log("tag #" + tagDoc.TagID + "reported stolen at " + Date.now().toString())
+                }
+            })
+
+        }
+
+
+    }
     app.get('/api/sendPush/:UID', function(req, res) {
         var requestData = {
             "channels": [
@@ -173,6 +228,7 @@ var createServer = function(port, done) {
             if (err) throw err
             else {
                 res.send(JSON.parse(results).n.toString());
+                securityCheck(id, newState);
             }
         })
 
@@ -237,8 +293,8 @@ var createServer = function(port, done) {
     });
 
     app.get('/api/shouldAlarm/', function(req, res) {
-        //this is faked right now
-        var result = (Math.random() > .95) ? 1 : 0
+        // var result = (Math.random() > .95) ? 1 : 0
+        var result = Alarm ? 1 : 0
         res.set('Content-Type', 'text/JSON');
         res.send(result.toString())
     });
