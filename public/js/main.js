@@ -46,7 +46,7 @@ function updateData() {
         context: document.body
     }).then(function(data) {
         // $('#data').html("")
-        users = JSON.parse(data).sort((a, b) => a.UID - b.UID)
+        users = JSON.parse(data)
 
         var tagInfo = {}
         var userDataList = []
@@ -73,6 +73,7 @@ function updateData() {
 
 function render(userList, tagInfo) {
     var newContent = ""
+    userList.sort((a, b) => a.UID - b.UID)
     userList.forEach(user => {
         newContent += UserTemplate(user)
         tagInfo[user.UID].forEach(tag => {
