@@ -32,9 +32,14 @@ $('#sendPushBtn').click(function() {
     });
 })
 
-// var UserTemplate = _.template("<%= name %>&emsp; <%= UID %><br>");
-var UserTemplate = _.template("<%= name %>&emsp; <%= UID %> #tags:<%= tagInfo.length%>");
-var TagTemplate = _.template("<li><%= TagID%> <%= name%> <%= state.location%></li>")
+var UserTemplate = _.template("<%= name %>&emsp;ID: <%= UID %>&emsp; tags:");//<%= tagInfo.length%>");
+var TagTemplate = _.template("<li><%=type%> <%= TagID%> <%= name%>: <%=locationMap[state.location]%></li>")
+
+var locationMap = {
+    "-2": "Missing",
+    "-1": "Signed Out",
+    "1": "Checked in"
+}
 
 function updateData() {
     console.log('updating')
