@@ -57,18 +57,18 @@ var createServer = function(port, done) {
         tagCollection.findOne({
             TagID: tID,
         }, function(err, tagDoc) {
-            if(err) throw err
-		
+            if (err) throw err
+
             if (tagDoc.type === "fob") {
                 activeFobs[tagDoc.UID] = tagDoc;
                 setTimeout(() => {
                     activeFobs[tagDoc.UID] = undefined
                 }, activeDuration);
             } else {
-                if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob"){
-			return;
-		}else if (newState === '-1'){
-			setTimeout(()=>{
+                if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob") {
+                    return;
+                } else if (newState === '-1') {
+                    setTimeout(() => {
                         soundAlarm(tagDoc)
                     }, activeDuration);
                 }
@@ -300,6 +300,12 @@ var createServer = function(port, done) {
         res.send(result.toString())
     });
 
+    app.get('/api/random/', function(req, res) {
+        var result = (Math.random() > .95) ? 1 : 0
+        // var result = Alarm ? 1 : 0
+        res.set('Content-Type', 'text/JSON');
+        res.send(result.toString())
+    });
 
     app.use('/', express.static(path.join(__dirname, 'public')));
 
