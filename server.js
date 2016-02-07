@@ -58,7 +58,8 @@ var createServer = function(port, done) {
             TagID: tID,
         }, function(err, tagDoc) {
             if (err) throw err
-
+            if(!tagDoc)
+                return
             if (tagDoc.type === "fob") {
                 activeFobs[tagDoc.UID] = tagDoc;
                 setTimeout(() => {
