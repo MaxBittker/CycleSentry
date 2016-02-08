@@ -32,7 +32,7 @@ $('#sendPushBtn').click(function() {
     });
 })
 
-var UserTemplate = _.template("<%= name %>&emsp;ID: <%= UID %>&emsp; tags:");//<%= tagInfo.length%>");
+var UserTemplate = _.template("<div class='userCard'><%= name %>&emsp;ID: <%= UID %>&emsp; tags:<ul>");//<%= tagInfo.length%>");
 var TagTemplate = _.template("<li><%=type%> <%= TagID%> <%= name%>: <%=locationMap[state.location]%></li>")
 
 var locationMap = {
@@ -84,6 +84,7 @@ function render(userList, tagInfo) {
         tagInfo[user.UID].forEach(tag => {
             newContent += TagTemplate(tag)
         })
+    newContent+="</ul></div>"
     })
     $('#data').html(newContent)
 }

@@ -15,7 +15,17 @@ html {
     font-size: 1em;
     line-height: 1.4;
 }
-
+.userCard{
+	background-color: rgba(200,200,300,70);
+	padding: 10px;
+	margin-bottom: 20px;
+}
+.userCard ul{
+	margin: 5px;
+}
+.userCard li{
+	margin: 5px;
+}
 aside input, aside select {
     color: #000;
     width: 60%;
