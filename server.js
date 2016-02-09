@@ -103,11 +103,11 @@ var createServer = function(port, done) {
                         //TODO call ben
                     var requestData = {
                         "channels": [
-                            "uid".concat(tagdoc.UID.toString())
+                            "uid".concat(tagDoc.UID.toString())
                         ],
                         "data": {
                             "alert": "Your bike has left the station",
-                            "tagInfo":tagdoc
+                            "tagInfo":tagDoc
                         }
                     };
 
