@@ -242,7 +242,7 @@ var createServer = function(port, done) {
         var newState = req.params.state;
         //var rackID = 1 // Insert a single document
         var ack = false
-        if (newState === 0) {
+        if (newState === '0') {
             ack = true
             newState = -1
         }
