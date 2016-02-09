@@ -248,6 +248,26 @@ var createServer = function(port, done) {
 
     });
 
+    app.get('/api/timeSignedInToday/:UID', function(req, res) {
+        res.set('Content-Type', 'text/JSON');
+        var min = 0;
+        var max = 10800;
+        var retObj = {
+            'secondsSignedInToday': Math.floor(Math.random() * (max - min + 1)) + min
+        };
+        res.send(JSON.stringify(retObj));
+    });
+
+    app.get('/api/averageFirstSignInTime/:UID', function(req, res) {
+        res.set('Content-Type', 'text/JSON');
+        var min = 28800;
+        var max = 36000;
+        var retObj = {
+            'secondsPastMidnight': Math.floor(Math.random() * (max - min + 1)) + min
+        };
+        res.send(JSON.stringify(retObj));
+    });
+
     app.get('/api/getUserInfo/:UID', function(req, res) {
         var UID = req.params.UID;
 
