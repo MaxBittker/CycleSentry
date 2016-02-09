@@ -132,32 +132,6 @@ var createServer = function(port, done) {
 
 
     }
-    app.get('/api/sendPush/:UID', function(req, res) {
-        var requestData = {
-            "channels": [
-                "uid".concat(req.params.UID.toString())
-            ],
-            "data": {
-                "alert": "Your bike has disconnected from the RFID reader."
-            }
-        };
-
-        request({
-            url: 'https://api.parse.com/1/push',
-            method: "POST",
-            headers: {
-                "X-Parse-Application-Id": "qoCsCcYiHVhEoile0PQ8PWOrqL5ZNpLOX53haQ7T",
-                "X-Parse-REST-API-Key": "Vfl47NWaqpnTOLqysV2kHi90PbYKPyKzHsvgBnj0",
-                "Content-Type": "application/json"
-            },
-            json: true,
-            body: requestData
-        }, function(error, response, body) {
-            if (error == null) {
-                res.send("ok");
-            }
-        });
-    });
 
     app.get('/api/echo/:text', function(req, res) {
         var echo = req.params.text.toString();
@@ -246,23 +220,30 @@ var createServer = function(port, done) {
             ack = true
             newState = -1
         }
-        tagCollection.update({
-            TagID: id, //TODO: look into enforcing uniqeness
-        }, {
-            $set: {
-                state: {
-                    location: newState,
-                    timestamp: Date.now()
-                }
-            }
-        }, function(err, results) {
+        tagCollection.findOne({
+            TagID: id,
+        }, function(err, tagDoc) {
+            if (tagDoc.state.location === newState)
+                ack = true
 
-            if (err) throw err
-            else {
-                res.send(JSON.parse(results).n.toString());
-                if (!ack)
-                    securityCheck(id, newState);
-            }
+            tagCollection.update({
+                TagID: id, //TODO: look into enforcing uniqeness
+            }, {
+                $set: {
+                    state: {
+                        location: newState,
+                        timestamp: Date.now()
+                    }
+                }
+            }, function(err, results) {
+
+                if (err) throw err
+                else {
+                    res.send(JSON.parse(results).n.toString());
+                    if (!ack)
+                        securityCheck(id, newState);
+                }
+            })
         })
 
     });
