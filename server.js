@@ -241,6 +241,11 @@ var createServer = function(port, done) {
         var id = req.params.TagID.toString();
         var newState = req.params.state;
         //var rackID = 1 // Insert a single document
+        var ack = false
+        if (newState === 0) {
+            ack = true
+            newState = -1
+        }
         tagCollection.update({
             TagID: id, //TODO: look into enforcing uniqeness
         }, {
@@ -255,7 +260,8 @@ var createServer = function(port, done) {
             if (err) throw err
             else {
                 res.send(JSON.parse(results).n.toString());
-                securityCheck(id, newState);
+                if (!ack)
+                    securityCheck(id, newState);
             }
         })
 
