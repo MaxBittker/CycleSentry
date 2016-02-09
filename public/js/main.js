@@ -23,16 +23,7 @@ $('#addTag').click(function() {
     }
 })
 
-$('#sendPushBtn').click(function() {
-    var ID = $('#pushIdInput').val();
-
-    console.log(ID);
-    $.ajax("/api/sendPush/" + ID).then(function(response) {
-        console.log(response);
-    });
-})
-
-var UserTemplate = _.template("<div class='userCard'><%= name %>&emsp;ID: <%= UID %>&emsp; tags:<ul>");//<%= tagInfo.length%>");
+var UserTemplate = _.template("<div class='userCard'><%= name %>&emsp;ID: <%= UID %>&emsp; tags:<ul>"); //<%= tagInfo.length%>");
 var TagTemplate = _.template("<li><%=type%> <%= TagID%> <%= name%>: <%=locationMap[state.location]%></li>")
 
 var locationMap = {
@@ -84,7 +75,7 @@ function render(userList, tagInfo) {
         tagInfo[user.UID].forEach(tag => {
             newContent += TagTemplate(tag)
         })
-    newContent+="</ul></div>"
+        newContent += "</ul></div>"
     })
     $('#data').html(newContent)
 }
