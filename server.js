@@ -107,7 +107,7 @@ var createServer = function(port, done) {
                         ],
                         "data": {
                             "alert": "Your bike has left the station",
-                            "tagInfo":tagDoc
+                            "tagInfo": tagDoc
                         }
                     };
 
@@ -122,9 +122,8 @@ var createServer = function(port, done) {
                         json: true,
                         body: requestData
                     }, function(error, response, body) {
-                        if (error == null) {
-                            res.send("ok");
-                        }
+                        if (error) throw error
+
                     });
                 }
             })
