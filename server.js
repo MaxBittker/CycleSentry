@@ -58,7 +58,7 @@ var createServer = function(port, done) {
             TagID: tID,
         }, function(err, tagDoc) {
             if (err) throw err
-            if(!tagDoc)
+            if (!tagDoc)
                 return
             if (tagDoc.type === "fob") {
                 activeFobs[tagDoc.UID] = tagDoc;
@@ -100,6 +100,32 @@ var createServer = function(port, done) {
                 if (err) throw err
                 else {
                     console.log("tag #" + tagDoc.TagID + "reported stolen at " + Date.now().toString())
+                        //TODO call ben
+                    var requestData = {
+                        "channels": [
+                            "uid".concat(tagdoc.UID.toString())
+                        ],
+                        "data": {
+                            "alert": "Your bike has left the station",
+                            "tagInfo":tagdoc
+                        }
+                    };
+
+                    request({
+                        url: 'https://api.parse.com/1/push',
+                        method: "POST",
+                        headers: {
+                            "X-Parse-Application-Id": "qoCsCcYiHVhEoile0PQ8PWOrqL5ZNpLOX53haQ7T",
+                            "X-Parse-REST-API-Key": "Vfl47NWaqpnTOLqysV2kHi90PbYKPyKzHsvgBnj0",
+                            "Content-Type": "application/json"
+                        },
+                        json: true,
+                        body: requestData
+                    }, function(error, response, body) {
+                        if (error == null) {
+                            res.send("ok");
+                        }
+                    });
                 }
             })
 
@@ -303,7 +329,7 @@ var createServer = function(port, done) {
 
     app.get('/api/random/', function(req, res) {
         var result = (Math.random() > .95) ? 1 : 0
-        // var result = Alarm ? 1 : 0
+            // var result = Alarm ? 1 : 0
         res.set('Content-Type', 'text/JSON');
         res.send(result.toString())
     });
