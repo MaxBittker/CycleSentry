@@ -14,16 +14,11 @@ var Db = require('mongodb').Db,
     Client = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID;
 
-
-var busboy = require('connect-busboy');
-
 var url = 'mongodb://localhost:27017/'
 var db
 var activeFobs = {}
 var activeDuration = 8 * 1000 // milliseconds
 var Alarm = false;
-
-app.use(busboy());
 
 var start = function(port, dbName, done) {
     if (!done) {

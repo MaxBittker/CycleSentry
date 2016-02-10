@@ -3,8 +3,8 @@ var fs = require('fs');
 var request = require('request')
 var http = require('http')
 var port = process.argv[2] || 7777;
-var ServerIP = "http://cyclesentry.xyz"
 // var ServerIP = "http://localhost:9999"
+var ServerIP = "http://cyclesentry.xyz"
 var n = 0
 try {
     var camera = new cv.VideoCapture(0);
@@ -15,14 +15,14 @@ try {
 setInterval(function() {
     request(ServerIP + "/api/shouldAlarm", function(err, res, bod) {
         if (err) throw err
-        if (res !== '1')
+        if (bod !== '1')
             return
         camera.read(function(err, im) {
             if (err) throw err;
 
             var filename = './tmp/' + n.toString() + '.png'
             var oldN = n
-            n = (n + 1) % 100
+            n = (n + 1) % 30
             im.save(filename)
             console.log("got alarm, wrote: " + filename)
                 // fs.createReadStream("./tmp/test.txt").pipe(
@@ -41,7 +41,7 @@ setInterval(function() {
     camera.read(function(err, im) {
         if (err) throw err;
     });
-}, 5000);
+}, 1500);
 
 var server = http.createServer(function(req, res) {
     res.writeHead(200, {
