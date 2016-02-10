@@ -22,7 +22,10 @@ setInterval(function() {
             n = (n + 1) % 10
             im.save(filename)
             console.log("got alarm, wrote: " + filename)
-            fs.createReadStream(filename).pipe(request.put('http://cyclesentry.xyz/api/upload/' + filename))
+            fs.createReadStream(filename).pipe(request.put('http://cyclesentry.xyz/api/upload/' + filename,
+                function(err, res) {
+                    console.log(err, res)
+                }))
         });
 
     })
