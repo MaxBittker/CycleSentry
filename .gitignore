@@ -1,3 +1,4 @@
 node_modules/
 cam/tmp/*
 public/tmp/*
+public/events/*

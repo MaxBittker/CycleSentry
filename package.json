@@ -20,8 +20,10 @@
   "dependencies": {
     "assert": "*",
     "express": "*",
+    "gifencoder": "^1.0.6",
     "mongodb": "*",
     "path": "*",
+    "png-file-stream": "^1.0.0",
     "request": "*",
     "underscore": "*"
   },

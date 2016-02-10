@@ -3,8 +3,8 @@ var fs = require('fs');
 var request = require('request')
 var http = require('http')
 var port = process.argv[2] || 7777;
-// var ServerIP = "http://localhost:9999"
-var ServerIP = "http://cyclesentry.xyz"
+var ServerIP = "http://localhost:9999"
+    // var ServerIP = "http://cyclesentry.xyz"
 var n = 0
 try {
     var camera = new cv.VideoCapture(0);
@@ -14,34 +14,33 @@ try {
 
 setInterval(function() {
     request(ServerIP + "/api/shouldAlarm", function(err, res, bod) {
-        if (err) throw err
+        if (err)
+            return
         if (bod !== '1')
             return
-        camera.read(function(err, im) {
-            if (err) throw err;
 
-            var filename = './tmp/' + n.toString() + '.png'
-            var oldN = n
-            n = (n + 1) % 30
-            im.save(filename)
-            console.log("got alarm, wrote: " + filename)
-                // fs.createReadStream("./tmp/test.txt").pipe(
+        var uploadName = Date.now().toString() + '.png'
+        var sendN = ((n + 60) - 20) % 60
+        var filename = './tmp/' + sendN.toString() + '.png'
+        console.log("got alarm, send: " + filename)
 
-            var uploadName = Date.now().toString() + '.png'
-            fs.createReadStream(filename).pipe(
-                request.put(ServerIP + '/api/upload/' + uploadName,
-                    function(err, res) {
-                        if (err) throw err
-                        console.log(res.body)
-                    }))
-        });
+        fs.createReadStream(filename).pipe(
+            request.put(ServerIP + '/api/upload/' + uploadName,
+                function(err, res) {
+                    if (err) throw err
+                    console.log(res.body)
+                }))
 
     })
 
     camera.read(function(err, im) {
         if (err) throw err;
+        var filename = './tmp/' + n.toString() + '.png'
+        n = (n + 1) % 60
+        im.save(filename)
+
     });
-}, 1500);
+}, 500);
 
 var server = http.createServer(function(req, res) {
     res.writeHead(200, {

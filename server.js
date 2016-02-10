@@ -14,11 +14,15 @@ var Db = require('mongodb').Db,
     Client = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID;
 
+var GIFEncoder = require('gifencoder');
+var pngFileStream = require('png-file-stream');
+
 var url = 'mongodb://localhost:27017/'
 var db
 var activeFobs = {}
 var activeDuration = 8 * 1000 // milliseconds
 var Alarm = false;
+var AlarmEvent = false;
 
 var start = function(port, dbName, done) {
     if (!done) {
@@ -82,8 +86,10 @@ var createServer = function(port, done) {
             return;
         else {
             Alarm = true;
+            AlarmEvent = (new Date()).toISOString();
             setTimeout(() => {
                 Alarm = false
+                buildGif()
             }, activeDuration * 2);
 
             tagCollection.update({
@@ -232,7 +238,6 @@ var createServer = function(port, done) {
                 return
             }
             if (tagDoc.state.location === newState)
-
                 ack = true
 
             tagCollection.update({
@@ -353,7 +358,7 @@ var createServer = function(port, done) {
         var filename = req.params.filename
 
         var body = new Buffer('');
-        filePath = __dirname + '/public/tmp/' + filename;
+        filePath = __dirname + '/public/tmp/' + AlarmEvent + "-" + filename;
         req.on('data', function(data) {
             body = Buffer.concat([body, data])
         });
@@ -369,12 +374,33 @@ var createServer = function(port, done) {
 
     })
 
+    function buildGif() {
+
+        var encoder = new GIFEncoder(640, 480);
+        console.log("building gif")
+        pngFileStream('./public/tmp/' + AlarmEvent + '-*.png')
+            .pipe(encoder.createWriteStream({
+                repeat: 0,
+                delay: 250,
+                quality: 10
+            }))
+            .pipe(fs.createWriteStream('./public/events/' + AlarmEvent + '.gif'));
+    }
+
     app.get('/gallery', function(req, res) {
-        fs.readdir('./public/tmp', (err, data) => {
+        fs.readdir('./public/events', (err, data) => {
             if (err) throw err;
-            var retStr = "<html><body>"
+            var retStr = '<html><head><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous"></head><body><div class="container"><div class="row">'
             data.forEach(fileName => {
-                retStr += "<div style='display: inline;' class='galleryCard'><img style='width: 33%;' src='/tmp/" + fileName + "'> </div>"
+                var timestamp = fileName.split('.')[0];
+                console.log(timestamp)
+                date = new Date(timestamp)
+                timeString = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + " " + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+
+                retStr += `<div class='col-md-6' class='galleryCard'>
+                                <img style='width: 100%;' src='/events/${fileName}'>
+                                <h4 style='width: 100%;'>Event from ${timeString}</h4> 
+                           </div>`
             })
             res.set('Content-Type', 'text/HTML');
             res.send(retStr)
@@ -394,4 +420,3 @@ var createServer = function(port, done) {
 };
 
 module.exports = start;
-// start(8080)
