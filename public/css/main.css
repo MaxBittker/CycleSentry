@@ -4,35 +4,75 @@
     /*font-size: 2em;*/
     /*line-height: 1.1;*/
 }
-#data li{
+
+#data li {
     margin-left: 30px;
 }
-#data ul{
+
+#data ul {
     margin-bottom: 30px;
 }
+
 html {
-    color: #222;
+    color: #444;
     font-size: 1em;
     line-height: 1.4;
+    background-color: #ecf0f1;
 }
-.userCard{
-	background-color: rgba(200,200,300,70);
-	padding: 10px;
-	margin-bottom: 20px;
+
+.userCard {
+    background-color: #df9985;
+    padding: 10px;
+    padding-bottom: 0px;
+    margin-bottom: 20px;
+    border-bottom: 20px solid #ce7e63;
+     -webkit-box-shadow: 0 5px 10px #aaa;
+        -moz-box-shadow: 0 5px 10px #aaa;
+        box-shadow: 0 5px 10px #aaa;
 }
-.userCard ul{
-	margin: 5px;
+.userCard h4{
+    margin:0px;
 }
-.userCard li{
-	margin: 5px;
+
+.userCard ul {
+    margin: 5px;
 }
-aside input, aside select {
-    color: #000;
+
+.userCard li {
+    margin: 5px;
+}
+button{
+    text-color: #333;
+    background-color: #ce7e63;
+
+}
+aside input,
+aside select {
+    color: #333;
     width: 60%;
     /*margin-left: 50px*/
     /*display: inline;*/
     float: right;
 }
+
+a:link {
+    color:  #333;
+}
+
+/* visited link */
+a:visited {
+    color:  #333;
+}
+
+/* mouse over link */
+a:hover {
+    color:  #333;
+}
+
+/* selected link */
+a:active {
+    color:  #333;
+} 
 
 .inputLabel {
     display: inline;
@@ -105,18 +145,18 @@ body {
    =================== */
 
 .header-container {
-    border-bottom: 20px solid #e44d26;
+    border-bottom: 20px solid #ce7e63;
 }
 
 .footer-container,
 .main aside {
-    border-top: 20px solid #e44d26;
+    border-top: 20px solid #ce7e63;
 }
 
 .header-container,
 .footer-container,
 .main aside {
-    background: #f16529;
+    background: #df9985;
 }
 
 .title {

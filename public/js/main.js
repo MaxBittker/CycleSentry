@@ -23,7 +23,7 @@ $('#addTag').click(function() {
     }
 })
 
-var UserTemplate = _.template("<div class='userCard'><%= name %>&emsp;ID: <%= UID %>&emsp; tags:<ul>"); //<%= tagInfo.length%>");
+var UserTemplate = _.template("<div class='userCard'><h4><%= name %>&emsp;ID: <%= UID %>&emsp; tags:</h4><ul>"); //<%= tagInfo.length%>");
 var TagTemplate = _.template("<li><%=type%> <%= TagID%> <%= name%>: <%=locationMap[state.location]%></li>")
 
 var locationMap = {

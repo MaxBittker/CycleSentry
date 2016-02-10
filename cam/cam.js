@@ -3,8 +3,10 @@ var fs = require('fs');
 var request = require('request')
 var http = require('http')
 var port = process.argv[2] || 7777;
-var ServerIP = "http://localhost:9999"
-    // var ServerIP = "http://cyclesentry.xyz"
+var ServerIP = "http://cyclesentry.xyz"
+if (process.argv[2] === "local")
+    ServerIP = "http://localhost:9999"
+
 var n = 0
 try {
     var camera = new cv.VideoCapture(0);
