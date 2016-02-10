@@ -21,17 +21,18 @@ html {
 }
 
 .userCard {
-    background-color: #df9985;
+    background-color: #749076;
     padding: 10px;
     padding-bottom: 0px;
     margin-bottom: 20px;
-    border-bottom: 20px solid #ce7e63;
-     -webkit-box-shadow: 0 5px 10px #aaa;
-        -moz-box-shadow: 0 5px 10px #aaa;
-        box-shadow: 0 5px 10px #aaa;
+    border-bottom: 20px solid #5b725d;
+    -webkit-box-shadow: 0 5px 10px #aaa;
+    -moz-box-shadow: 0 5px 10px #aaa;
+    box-shadow: 0 5px 10px #aaa;
 }
-.userCard h4{
-    margin:0px;
+
+.userCard h4 {
+    margin: 0px;
 }
 
 .userCard ul {
@@ -41,11 +42,12 @@ html {
 .userCard li {
     margin: 5px;
 }
-button{
-    text-color: #333;
-    background-color: #ce7e63;
 
+button {
+    text-color: #333;
+    background-color: #5b725d;
 }
+
 aside input,
 aside select {
     color: #333;
@@ -56,23 +58,29 @@ aside select {
 }
 
 a:link {
-    color:  #333;
+    color: #333;
 }
+
 
 /* visited link */
+
 a:visited {
-    color:  #333;
+    color: #333;
 }
+
 
 /* mouse over link */
+
 a:hover {
-    color:  #333;
+    color: #333;
 }
 
+
 /* selected link */
+
 a:active {
-    color:  #333;
-} 
+    color: #333;
+}
 
 .inputLabel {
     display: inline;
@@ -81,12 +89,12 @@ a:active {
 }
 
 ::-moz-selection {
-    background: #b3d4fc;
+    background: #e08a81;
     text-shadow: none;
 }
 
 ::selection {
-    background: #b3d4fc;
+    background: #e08a81;
     text-shadow: none;
 }
 
@@ -132,6 +140,9 @@ textarea {
 
 body {
     font: 16px/26px Helvetica, Helvetica Neue, Arial;
+    background-image: url("../CC.png");
+    background-size: 900px 900px;
+    background-repeat: no-repeat;
 }
 
 .wrapper {
@@ -145,18 +156,18 @@ body {
    =================== */
 
 .header-container {
-    border-bottom: 20px solid #ce7e63;
+    border-bottom: 20px solid #5b725d;
 }
 
 .footer-container,
 .main aside {
-    border-top: 20px solid #ce7e63;
+    border-top: 20px solid #5b725d;
 }
 
 .header-container,
 .footer-container,
 .main aside {
-    background: #df9985;
+    background: #749076;
 }
 
 .title {

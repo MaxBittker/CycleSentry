@@ -22,7 +22,7 @@ setInterval(function() {
             return
 
         var uploadName = Date.now().toString() + '.png'
-        var sendN = ((n + 60) - 20) % 60
+        var sendN = ((n + 60) - 25) % 60
         var filename = './tmp/' + sendN.toString() + '.png'
         console.log("got alarm, send: " + filename)
 
