@@ -14,11 +14,16 @@ var Db = require('mongodb').Db,
     Client = require('mongodb').MongoClient,
     ObjectId = require('mongodb').ObjectID;
 
+
+var busboy = require('connect-busboy');
+
 var url = 'mongodb://localhost:27017/'
 var db
 var activeFobs = {}
 var activeDuration = 8 * 1000 // milliseconds
 var Alarm = false;
+
+app.use(busboy());
 
 var start = function(port, dbName, done) {
     if (!done) {
@@ -340,9 +345,38 @@ var createServer = function(port, done) {
         res.send(result.toString())
     });
 
-    app.put('api/upload/:filename', function(req, res) {
-        console.log(req, res, req.filename)
+    app.put('/api/upload/:filename', function(req, res, next) {
+        var filename = req.params.filename
+
+        // var fstream;
+        // req.pipe(req.busboy);
+        // req.busboy.on('file', function(fieldname, file, filename) {
+        //     console.log("Uploading: " + filename);
+
+        //     fstream = fs.createWriteStream(__dirname + 'public/tmp/' + filename);
+        //     file.pipe(fstream);
+        //     fstream.on('close', function() {
+        //         console.log("Upload Finished of " + filename);
+        //         // res.redirect('back'); //where to go next
+        //     });
+        // });
+        console.log(req, res)
         res.send('PUT request to upload');
+
+        var body = '';
+        filePath = __dirname + '/public/tmp/' + filename;
+        req.on('data', function(data) {
+            console.log(data)
+            body += data;
+        });
+
+        req.on('end', function() {
+            console.log()
+            fs.writeFile(filePath, body, function() {
+                res.end();
+            });
+        });
+
     })
 
     app.use('/', express.static(path.join(__dirname, 'public')));
