@@ -33,8 +33,19 @@ var server = http.createServer(function(req, res) {
     });
 
 })
-request("http://cyclesentry.xyz/api/shouldAlarm") {
+request("http://cyclesentry.xyz/api/shouldAlarm", function(err, res, bod) {
+    if (err) throw err
 
-}
+    camera.read(function(err, im) {
+        if (err) throw err;
+        // var filename = './tmp/'+Date.now().toString()+'.png'
+        var filename = './tmp/' + n.toString() + '.png'
+        n = (n + 1) % 10
+        im.save(filename)
+        console.log("got alarm, wrote: " + filename)
+        fs.createReadStream(filename).pipe(request.put('http://cyclesentry.xyz/api/upload/' + filename))
+    });
+
+})
 
 server.listen(port)

@@ -1,34 +1,35 @@
 {
-    "name": "cyclesentry",
-    "version": "0.0.1",
-    "description": "490 Project - RFID bike tracking",
-    "main": "server.js",
-    "devDependencies": {
-        "mocha": "*",
-        "superagent": "*",
-        "http-status": "*",
-        "http": "*"
-    },
-    "scripts": {
-        "test": "mocha",
-        "start": "node server.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/MaxBittker/CycleSentry.git"
-    },
-    "dependencies": {
-        "express": "*",
-        "path": "*",
-        "underscore": "*",
-        "mongodb": "*",
-        "assert": "*",
-		"request": "*"
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/MaxBittker/CycleSentry/issues"
-    },
-    "homepage": "https://github.com/MaxBittker/CycleSentry#readme"
+  "name": "cyclesentry",
+  "version": "0.0.1",
+  "description": "490 Project - RFID bike tracking",
+  "main": "server.js",
+  "devDependencies": {
+    "mocha": "*",
+    "superagent": "*",
+    "http-status": "*",
+    "http": "*"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxBittker/CycleSentry.git"
+  },
+  "dependencies": {
+    "assert": "*",
+    "express": "*",
+    "express-ws": "^0.2.6",
+    "mongodb": "*",
+    "path": "*",
+    "request": "*",
+    "underscore": "*"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaxBittker/CycleSentry/issues"
+  },
+  "homepage": "https://github.com/MaxBittker/CycleSentry#readme"
 }
