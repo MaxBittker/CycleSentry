@@ -142,7 +142,9 @@ body {
     font: 16px/26px Helvetica, Helvetica Neue, Arial;
     background-image: url("../CC.png");
     background-size: 900px 900px;
-    background-repeat: no-repeat;
+    /*background-repeat: no-repeat;*/
+    background-position: center;
+    
 }
 
 .wrapper {
