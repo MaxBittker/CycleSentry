@@ -214,7 +214,8 @@ var createServer = function(port, done) {
     app.get('/api/updateTag/:TagID/:state', function(req, res) {
         var id = req.params.TagID.toString();
         var newState = req.params.state;
-        //var rackID = 1 // Insert a single document
+        console.log("got " + id + " - " + newState)
+            //var rackID = 1 // Insert a single document
         var ack = false
         if (newState === '0') {
             ack = true
@@ -341,24 +342,24 @@ var createServer = function(port, done) {
     });
 
     app.put('/api/upload/:filename', function(req, res, next) {
-            var filename = req.params.filename
+        var filename = req.params.filename
 
-            var body = new Buffer('');
-            filePath = __dirname + '/public/tmp/' + filename;
-            req.on('data', function(data) {
-                body = Buffer.concat([body, data])
+        var body = new Buffer('');
+        filePath = __dirname + '/public/tmp/' + filename;
+        req.on('data', function(data) {
+            body = Buffer.concat([body, data])
+        });
+
+        req.on('end', function() {
+            console.log('writing' + filePath + "    length: " + body.length)
+            fs.writeFile(filePath, body.toString("binary"), {
+                encoding: 'binary'
+            }, function() {
+                res.end();
             });
+        });
 
-            req.on('end', function() {
-                console.log('writing' + filePath + "    length: " + body.length)
-                fs.writeFile(filePath, body.toString("binary"), {
-                    encoding: 'binary'
-                }, function() {
-                    res.end();
-                });
-            });
-
-        })
+    })
 
     app.get('/gallery', function(req, res) {
         fs.readdir('./public/tmp', (err, data) => {
