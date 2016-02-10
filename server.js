@@ -224,7 +224,15 @@ var createServer = function(port, done) {
         tagCollection.findOne({
             TagID: id,
         }, function(err, tagDoc) {
+            if (err) throw err
+
+            if (tagDoc === null) {
+                res.send(0);
+
+                return
+            }
             if (tagDoc.state.location === newState)
+
                 ack = true
 
             tagCollection.update({
