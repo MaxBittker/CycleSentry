@@ -341,23 +341,35 @@ var createServer = function(port, done) {
     });
 
     app.put('/api/upload/:filename', function(req, res, next) {
-        var filename = req.params.filename
+            var filename = req.params.filename
 
-        var body = new Buffer('');
-        filePath = __dirname + '/public/tmp/' + filename;
-        req.on('data', function(data) {
-            body = Buffer.concat([body, data])
-        });
-
-        req.on('end', function() {
-            console.log('writing' + filePath + "    length: " + body.length)
-            fs.writeFile(filePath, body.toString("binary"), {
-                encoding: 'binary'
-            }, function() {
-                res.end();
+            var body = new Buffer('');
+            filePath = __dirname + '/public/tmp/' + filename;
+            req.on('data', function(data) {
+                body = Buffer.concat([body, data])
             });
-        });
 
+            req.on('end', function() {
+                console.log('writing' + filePath + "    length: " + body.length)
+                fs.writeFile(filePath, body.toString("binary"), {
+                    encoding: 'binary'
+                }, function() {
+                    res.end();
+                });
+            });
+
+        })
+
+    app.get('/gallery', function(req, res) {
+        fs.readdir('./public/tmp', (err, data) => {
+            if (err) throw err;
+            var retStr = "<html><body>"
+            data.forEach(fileName => {
+                retStr += "<div style='display: inline;' class='galleryCard'><img style='width: 33%;' src='/tmp/" + fileName + "'> </div>"
+            })
+            res.set('Content-Type', 'text/HTML');
+            res.send(retStr)
+        });
     })
 
     app.use('/', express.static(path.join(__dirname, 'public')));
