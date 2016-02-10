@@ -340,8 +340,8 @@ var createServer = function(port, done) {
         res.send(result.toString())
     });
 
-    app.post('api/upload', function(req, res) {
-        console.log(req)
+    app.put('api/upload', function(req, res) {
+        console.log(req,res)
     })
 
     app.use('/', express.static(path.join(__dirname, 'public')));
