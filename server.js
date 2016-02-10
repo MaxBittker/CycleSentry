@@ -348,31 +348,17 @@ var createServer = function(port, done) {
     app.put('/api/upload/:filename', function(req, res, next) {
         var filename = req.params.filename
 
-        // var fstream;
-        // req.pipe(req.busboy);
-        // req.busboy.on('file', function(fieldname, file, filename) {
-        //     console.log("Uploading: " + filename);
-
-        //     fstream = fs.createWriteStream(__dirname + 'public/tmp/' + filename);
-        //     file.pipe(fstream);
-        //     fstream.on('close', function() {
-        //         console.log("Upload Finished of " + filename);
-        //         // res.redirect('back'); //where to go next
-        //     });
-        // });
-        console.log(req, res)
-        res.send('PUT request to upload');
-
-        var body = '';
+        var body = new Buffer('');
         filePath = __dirname + '/public/tmp/' + filename;
         req.on('data', function(data) {
-            console.log(data)
-            body += data;
+            body = Buffer.concat([body, data])
         });
 
         req.on('end', function() {
-            console.log()
-            fs.writeFile(filePath, body, function() {
+            console.log('writing' + filePath + "    length: " + body.length)
+            fs.writeFile(filePath, body.toString("binary"), {
+                encoding: 'binary'
+            }, function() {
                 res.end();
             });
         });
