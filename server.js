@@ -378,7 +378,7 @@ var createServer = function(port, done) {
         });
 
         req.on('end', function() {
-            console.log('writing' + filePath + "    length: " + body.length)
+            console.log('writing' + filePath)
             fs.writeFile(filePath, body.toString("binary"), {
                 encoding: 'binary'
             }, function() {
@@ -390,7 +390,7 @@ var createServer = function(port, done) {
 
     function buildGif() {
         var encoder = new GIFEncoder(640, 480);
-        console.log("building gif")
+        console.log("building gif: "+ AlarmEvent)
         pngFileStream('./public/tmp/' + AlarmEvent + '-*.png')
             .pipe(encoder.createWriteStream({
                 repeat: 0,
@@ -403,15 +403,15 @@ var createServer = function(port, done) {
     app.get('/gallery', function(req, res) {
         fs.readdir('./public/events', (err, data) => {
             if (err) throw err;
-            var retStr = '<html><head><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous"></head><body><div class="container"><div class="row">'
+            var retStr = '<html><head><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous"></head><body><div class="container-fluid"><div class="row">'
             data.reverse()
             data.forEach(fileName => {
                 var timestamp = fileName.split('.')[0];
-                console.log(timestamp)
+                // console.log(timestamp)
                 date = new Date(timestamp)
                 timeString = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + " " + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
 
-                retStr += `<div class='col-md-6' class='galleryCard'>
+                retStr += `<div class='col-md-4' class='galleryCard'>
                                 <img style='width: 100%;' src='/events/${fileName}'>
                                 <h4 style='width: 100%;'>Event from ${timeString}</h4> 
                            </div>`

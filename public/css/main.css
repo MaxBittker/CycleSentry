@@ -71,9 +71,11 @@ button {
     text-color: #333;
     background-color: #5b725d;
 }
-aside{
+
+aside {
     margin-bottom: 20px;
 }
+
 aside input,
 aside select {
     color: #333;
@@ -132,7 +134,7 @@ hr {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #5b725d;
     margin: 1em 0;
     padding: 0;
 }
