@@ -15,6 +15,10 @@ $('#addTag').click(function() {
     var UID = $('#tagUIDInput').val()
     var TID = $('#tagIDInput').val()
     var type = $('#typeSelect').val()
+    if (TID === ""){
+        console.log("filling TID from server")
+        TID = "XXX"
+    }
     if (type && TID && UID && name) {
         $.ajax("/api/insertTag/" + UID + '/' + TID + '/' + type + '/' + name).then(function(response) {
             console.log(response);
@@ -74,7 +78,7 @@ function updateData() {
         if (data === 1) {
             $('#alarmState').show()
 
-        } else{
+        } else {
             $('#alarmState').hide()
         }
 

@@ -24,6 +24,9 @@ var activeDuration = 8 * 1000 // milliseconds
 var Alarm = false;
 var AlarmEvent = false;
 
+var timeSignedInToday = 0
+var tagStack = []
+
 var start = function(port, dbName, done) {
     if (!done) {
         done = () => console.log('\n')
@@ -197,6 +200,12 @@ var createServer = function(port, done) {
         var type = req.params.type.toString();
         var name = req.params.name.toString();
 
+        if (tid === 'XXX') {
+            if (tagStack.length > 0) {
+                tid = tagStack.pop()
+            } else
+                return
+        }
         // Insert a single document
 
         tagCollection.insert({
@@ -227,15 +236,20 @@ var createServer = function(port, done) {
             ack = true
             newState = -1
         }
+
         tagCollection.findOne({
             TagID: id,
         }, function(err, tagDoc) {
             if (err) throw err
 
-            if (tagDoc === null) {
+            if (tagDoc === null && newState === '1') {
                 res.send(0);
-
+                tagStack.push(TagID)
                 return
+            }
+            if ((newState === '-1') && (tagDoc.state.location === '1')) {
+                timeSignedInToday += Date.now() - tagDoc.state.timestamp
+                console.log(timeSignedInToday)
             }
             if (tagDoc.state.location === newState)
                 ack = true
@@ -264,20 +278,20 @@ var createServer = function(port, done) {
 
     app.get('/api/timeSignedInToday/:UID', function(req, res) {
         res.set('Content-Type', 'text/JSON');
-        var min = 0;
-        var max = 10800;
+        // var min = 0;
+        // var max = 10800;
         var retObj = {
-            'secondsSignedInToday': Math.floor(Math.random() * (max - min + 1)) + min
+            'secondsSignedInToday': timeSignedInToday //Math.floor(Math.random() * (max - min + 1)) + min
         };
         res.send(JSON.stringify(retObj));
     });
 
     app.get('/api/averageFirstSignInTime/:UID', function(req, res) {
         res.set('Content-Type', 'text/JSON');
-        var min = 28800;
-        var max = 36000;
+        // var min = 28800;
+        // var max = 36000;
         var retObj = {
-            'secondsPastMidnight': Math.floor(Math.random() * (max - min + 1)) + min
+            'secondsPastMidnight': 36051 //Math.floor(Math.random() * (max - min + 1)) + min
         };
         res.send(JSON.stringify(retObj));
     });
@@ -375,7 +389,6 @@ var createServer = function(port, done) {
     })
 
     function buildGif() {
-
         var encoder = new GIFEncoder(640, 480);
         console.log("building gif")
         pngFileStream('./public/tmp/' + AlarmEvent + '-*.png')
