@@ -291,7 +291,7 @@ var createServer = function(port, done) {
         // var min = 28800;
         // var max = 36000;
         var retObj = {
-            'secondsPastMidnight': 36051 //Math.floor(Math.random() * (max - min + 1)) + min
+            'secondsPastMidnight': 37051 //Math.floor(Math.random() * (max - min + 1)) + min
         };
         res.send(JSON.stringify(retObj));
     });
