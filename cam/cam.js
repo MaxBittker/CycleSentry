@@ -10,6 +10,7 @@ if (process.argv[2] === "local")
 var n = 0
 try {
     var camera = new cv.VideoCapture(0);
+    var window = new cv.NamedWindow('Video', 0)
 } catch (e) {
     console.log("Couldn't start camera:", e)
 }
@@ -39,6 +40,8 @@ setInterval(function() {
         if (err) throw err;
         var filename = './tmp/' + n.toString() + '.png'
         n = (n + 1) % 60
+        window.show(im);
+        window.blockingWaitKey(0, 50);
         im.save(filename)
 
     });
