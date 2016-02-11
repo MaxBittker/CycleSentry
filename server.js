@@ -57,385 +57,390 @@ var start = function(port, dbName, done) {
 var createServer = function(port, done) {
 
 
-    var userCollection = db.collection('users');
-    var tagCollection = db.collection('tags');
+        var userCollection = db.collection('users');
+        var tagCollection = db.collection('tags');
 
-    function securityCheck(tID, newState) {
-        tagCollection.findOne({
-            TagID: tID,
-        }, function(err, tagDoc) {
-            if (err) throw err
-            if (!tagDoc)
-                return
-            if (tagDoc.type === "fob") {
-                activeFobs[tagDoc.UID] = tagDoc;
-                setTimeout(() => {
-                    activeFobs[tagDoc.UID] = undefined
-                }, activeDuration);
-            } else {
-                if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob") {
-                    return;
-                } else if (newState === '-1') {
+        function securityCheck(tID, newState) {
+            tagCollection.findOne({
+                TagID: tID,
+            }, function(err, tagDoc) {
+                if (err) throw err
+                if (!tagDoc)
+                    return
+                if (tagDoc.type === "fob") {
+                    activeFobs[tagDoc.UID] = tagDoc;
                     setTimeout(() => {
-                        soundAlarm(tagDoc)
+                        activeFobs[tagDoc.UID] = undefined
                     }, activeDuration);
-                }
-            }
-        })
-    }
-
-    function soundAlarm(tagDoc) {
-        if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob")
-            return;
-        else {
-            Alarm = true;
-            AlarmEvent = (new Date()).toISOString();
-            setTimeout(() => {
-                if(Alarm)
-                    buildGif()
-                Alarm = false
-            }, activeDuration * 2);
-
-            tagCollection.update({
-                TagID: tagDoc.TagID, //TODO: look into enforcing uniqeness
-            }, {
-                $set: {
-                    state: {
-                        location: -2,
-                        timestamp: Date.now()
-                    }
-                }
-            }, function(err, results) {
-
-                if (err) throw err
-                else {
-                    console.log("tag #" + tagDoc.TagID + "reported stolen at " + Date.now().toString())
-
-                    var requestData = {
-                        "channels": [
-                            "uid".concat(tagDoc.UID.toString())
-                        ],
-                        "data": {
-                            "alert": "Your bike has left the station",
-                            "tagInfo": tagDoc
-                        }
-                    };
-
-                    request({
-                        url: 'https://api.parse.com/1/push',
-                        method: "POST",
-                        headers: {
-                            "X-Parse-Application-Id": "qoCsCcYiHVhEoile0PQ8PWOrqL5ZNpLOX53haQ7T",
-                            "X-Parse-REST-API-Key": "Vfl47NWaqpnTOLqysV2kHi90PbYKPyKzHsvgBnj0",
-                            "Content-Type": "application/json"
-                        },
-                        json: true,
-                        body: requestData
-                    }, function(error, response, body) {
-                        if (error) throw error
-
-                    });
-                }
-            })
-
-        }
-
-
-    }
-
-    app.get('/api/echo/:text', function(req, res) {
-        var echo = req.params.text.toString();
-        console.log(echo)
-        res.set('Content-Type', 'text/html');
-        res.send(echo)
-    });
-
-    app.get('/api/listUsers', function(req, res) {
-        userCollection.find({}, function(err, docs) {
-            res.set('Content-Type', 'text/html');
-            // res.write("[")
-            // console.log(docs.toArray())
-            var userArray = []
-            docs.each(function(err, doc) {
-                if (doc !== null) {
-                    // console.log(doc)
-                    userArray.push(doc)
-                        // res.write(JSON.stringify(doc))
                 } else {
-                    // res.write("]")
-                    res.send(JSON.stringify(userArray))
-                }
-
-            })
-        })
-    });
-
-    app.get('/api/insertUser/:UID/:name/:password', function(req, res) {
-        var id = req.params.UID.toString();
-        var name = req.params.name.toString();
-        var pword = req.params.password.toString();
-
-        // Insert a single document
-        // console.log(name);
-        var pnumber = "123456789"
-        var address = "123 street"
-            // console.log(pword?)
-        userCollection.insert({
-            UID: id,
-            name: name,
-            phonenumber: pnumber,
-            address: address,
-            password: pword
-        }, function(err, docsInserted) {
-            if (!err) {
-                res.send(docsInserted.ops[0]._id);
-            }
-
-        });
-
-    });
-
-    app.get('/api/insertTag/:UID/:TagID/:type/:name', function(req, res) {
-        var uid = req.params.UID.toString();
-        var tid = req.params.TagID.toString();
-        var type = req.params.type.toString();
-        var name = req.params.name.toString();
-
-        if (tid === 'XXX') {
-            if (tagStack.length > 0) {
-                tid = tagStack.pop()
-            } else
-                return
-        }
-        // Insert a single document
-
-        tagCollection.insert({
-            UID: uid,
-            TagID: tid,
-            type: type,
-            name: name,
-            state: {
-                location: -1,
-                timestamp: Date.now()
-            }
-        }, function(err, docsInserted) {
-            if (!err) {
-                res.send(docsInserted.ops[0]._id);
-            }
-
-        });
-
-    });
-
-    app.get('/api/updateTag/:TagID/:state', function(req, res) {
-        var id = req.params.TagID.toString();
-        var newState = req.params.state;
-        console.log("got " + id + " - " + newState)
-            //var rackID = 1 // Insert a single document
-        var ack = false
-        if (newState === '0') {
-            ack = true
-            newState = -1
-            Alarm = false
-        }
-
-        tagCollection.findOne({
-            TagID: id,
-        }, function(err, tagDoc) {
-            if (err) throw err
-
-            if (tagDoc === null && newState === '1') {
-                res.send('0');
-                tagStack.push(id)
-                console.log("pushed ID " + id + " to stack")
-                return
-            } else if (tagDoc === null) {
-                return
-            }
-            if ((newState === '-1') && (tagDoc.state.location === '1')) {
-                timeSignedInToday += Date.now() - tagDoc.state.timestamp
-                console.log(timeSignedInToday)
-            }
-            if (tagDoc.state.location === newState)
-                ack = true
-
-            tagCollection.update({
-                TagID: id, //TODO: look into enforcing uniqeness
-            }, {
-                $set: {
-                    state: {
-                        location: newState,
-                        timestamp: Date.now()
+                    if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob") {
+                        return;
+                    } else if (newState === '-1') {
+                        setTimeout(() => {
+                            soundAlarm(tagDoc)
+                        }, activeDuration);
                     }
                 }
-            }, function(err, results) {
-
-                if (err) throw err
-                else {
-                    res.send(JSON.parse(results).n.toString());
-                    if (!ack)
-                        securityCheck(id, newState);
-                }
             })
-        })
+        }
 
-    });
+        function soundAlarm(tagDoc) {
+            tagCollection.findOne({
+                    TagID: tagDoc.TagID,
+                }, function(err, newtagDoc) {
+                    if (newtagDoc.state.location === '1')
+                        return
+                    if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob")
+                        return;
+                    else {
+                        Alarm = true;
+                        AlarmEvent = (new Date()).toISOString();
+                        setTimeout(() => {
+                            if (Alarm)
+                                buildGif()
+                            Alarm = false
+                        }, activeDuration * 1.5);
 
-    app.get('/api/timeSignedInToday/:UID', function(req, res) {
-        res.set('Content-Type', 'text/JSON');
-        // var min = 0;
-        // var max = 10800;
-        var retObj = {
-            'secondsSignedInToday': (timeSignedInToday/1000)|0 //Math.floor(Math.random() * (max - min + 1)) + min
-        };
-        res.send(JSON.stringify(retObj));
-    });
+                        tagCollection.update({
+                            TagID: tagDoc.TagID, //TODO: look into enforcing uniqeness
+                        }, {
+                            $set: {
+                                state: {
+                                    location: -2,
+                                    timestamp: Date.now()
+                                }
+                            }
+                        }, function(err, results) {
 
-    app.get('/api/averageFirstSignInTime/:UID', function(req, res) {
-        res.set('Content-Type', 'text/JSON');
-        // var min = 28800;
-        // var max = 36000;
-        var retObj = {
-            'secondsPastMidnight': 179051 //Math.floor(Math.random() * (max - min + 1)) + min
-        };
-        res.send(JSON.stringify(retObj));
-    });
+                            if (err) throw err
+                            else {
+                                console.log("tag #" + tagDoc.TagID + "reported stolen at " + Date.now().toString())
 
-    app.get('/api/getUserInfo/:UID', function(req, res) {
-        var UID = req.params.UID;
+                                var requestData = {
+                                    "channels": [
+                                        "uid".concat(tagDoc.UID.toString())
+                                    ],
+                                    "data": {
+                                        "alert": "Your bike has left the station",
+                                        "tagInfo": tagDoc
+                                    }
+                                };
 
-        res.set('Content-Type', 'text/JSON');
-        userCollection.findOne({
-            UID: UID,
-        }, function(err, doc) {
-            if (err) throw err
-            else {
-                tagCollection.find({
-                    UID: UID,
-                }, function(err, docs) {
+                                request({
+                                    url: 'https://api.parse.com/1/push',
+                                    method: "POST",
+                                    headers: {
+                                        "X-Parse-Application-Id": "qoCsCcYiHVhEoile0PQ8PWOrqL5ZNpLOX53haQ7T",
+                                        "X-Parse-REST-API-Key": "Vfl47NWaqpnTOLqysV2kHi90PbYKPyKzHsvgBnj0",
+                                        "Content-Type": "application/json"
+                                    },
+                                    json: true,
+                                    body: requestData
+                                }, function(error, response, body) {
+                                    if (error) throw error
 
-                    var tags = []
+                                });
+                            }
+                        })
+
+                    }
+                }
+
+            }
+
+            app.get('/api/echo/:text', function(req, res) {
+                var echo = req.params.text.toString();
+                console.log(echo)
+                res.set('Content-Type', 'text/html');
+                res.send(echo)
+            });
+
+            app.get('/api/listUsers', function(req, res) {
+                userCollection.find({}, function(err, docs) {
+                    res.set('Content-Type', 'text/html');
+                    // res.write("[")
+                    // console.log(docs.toArray())
+                    var userArray = []
+                    docs.each(function(err, doc) {
+                        if (doc !== null) {
+                            // console.log(doc)
+                            userArray.push(doc)
+                                // res.write(JSON.stringify(doc))
+                        } else {
+                            // res.write("]")
+                            res.send(JSON.stringify(userArray))
+                        }
+
+                    })
+                })
+            });
+
+            app.get('/api/insertUser/:UID/:name/:password', function(req, res) {
+                var id = req.params.UID.toString();
+                var name = req.params.name.toString();
+                var pword = req.params.password.toString();
+
+                // Insert a single document
+                // console.log(name);
+                var pnumber = "123456789"
+                var address = "123 street"
+                    // console.log(pword?)
+                userCollection.insert({
+                    UID: id,
+                    name: name,
+                    phonenumber: pnumber,
+                    address: address,
+                    password: pword
+                }, function(err, docsInserted) {
+                    if (!err) {
+                        res.send(docsInserted.ops[0]._id);
+                    }
+
+                });
+
+            });
+
+            app.get('/api/insertTag/:UID/:TagID/:type/:name', function(req, res) {
+                var uid = req.params.UID.toString();
+                var tid = req.params.TagID.toString();
+                var type = req.params.type.toString();
+                var name = req.params.name.toString();
+
+                if (tid === 'XXX') {
+                    if (tagStack.length > 0) {
+                        tid = tagStack.pop()
+                    } else
+                        return
+                }
+                // Insert a single document
+
+                tagCollection.insert({
+                    UID: uid,
+                    TagID: tid,
+                    type: type,
+                    name: name,
+                    state: {
+                        location: -1,
+                        timestamp: Date.now()
+                    }
+                }, function(err, docsInserted) {
+                    if (!err) {
+                        res.send(docsInserted.ops[0]._id);
+                    }
+
+                });
+
+            });
+
+            app.get('/api/updateTag/:TagID/:state', function(req, res) {
+                var id = req.params.TagID.toString();
+                var newState = req.params.state;
+                console.log("got " + id + " - " + newState)
+                    //var rackID = 1 // Insert a single document
+                var ack = false
+                if (newState === '0') {
+                    ack = true
+                    newState = -1
+                    Alarm = false
+                }
+
+                tagCollection.findOne({
+                    TagID: id,
+                }, function(err, tagDoc) {
                     if (err) throw err
 
-                    docs.each(function(err, tagdoc) {
+                    if (tagDoc === null && newState === '1') {
+                        res.send('0');
+                        tagStack.push(id)
+                        console.log("pushed ID " + id + " to stack")
+                        return
+                    } else if (tagDoc === null) {
+                        return
+                    }
+                    if ((newState === '-1') && (tagDoc.state.location === '1')) {
+                        timeSignedInToday += Date.now() - tagDoc.state.timestamp
+                        console.log(timeSignedInToday)
+                    }
+                    if (tagDoc.state.location === newState)
+                        ack = true
 
-                        if (tagdoc !== null) {
-                            tags.push(tagdoc)
-                        } else {
-
-                            var retObj = {
-                                UID: UID,
-                                name: doc.name,
-                                tagInfo: tags
+                    tagCollection.update({
+                        TagID: id, //TODO: look into enforcing uniqeness
+                    }, {
+                        $set: {
+                            state: {
+                                location: newState,
+                                timestamp: Date.now()
                             }
+                        }
+                    }, function(err, results) {
 
-                            res.send(JSON.stringify(retObj));
-
+                        if (err) throw err
+                        else {
+                            res.send(JSON.parse(results).n.toString());
+                            if (!ack)
+                                securityCheck(id, newState);
                         }
                     })
                 })
-            }
-        })
 
-    });
+            });
 
+            app.get('/api/timeSignedInToday/:UID', function(req, res) {
+                res.set('Content-Type', 'text/JSON');
+                // var min = 0;
+                // var max = 10800;
+                var retObj = {
+                    'secondsSignedInToday': (timeSignedInToday / 1000) | 0 //Math.floor(Math.random() * (max - min + 1)) + min
+                };
+                res.send(JSON.stringify(retObj));
+            });
 
-    app.get('/api/getLocationInfo/', function(req, res) {
-        //this is faked right now because we only have one location.
-        //it should return an array of all locations.
-        tagCollection.count({
-                "state.location": "1"
-            },
-            function(err, count) {
+            app.get('/api/averageFirstSignInTime/:UID', function(req, res) {
+                res.set('Content-Type', 'text/JSON');
+                // var min = 28800;
+                // var max = 36000;
+                var retObj = {
+                    'secondsPastMidnight': 179051 //Math.floor(Math.random() * (max - min + 1)) + min
+                };
+                res.send(JSON.stringify(retObj));
+            });
 
-                if (err) throw err
+            app.get('/api/getUserInfo/:UID', function(req, res) {
+                var UID = req.params.UID;
 
                 res.set('Content-Type', 'text/JSON');
-                res.send(JSON.stringify([{
-                    "locationid": 1,
-                    occupancy: count,
-                    capacity: 1
-                }]))
-            })
-    });
+                userCollection.findOne({
+                    UID: UID,
+                }, function(err, doc) {
+                    if (err) throw err
+                    else {
+                        tagCollection.find({
+                            UID: UID,
+                        }, function(err, docs) {
 
-    app.get('/api/shouldAlarm/', function(req, res) {
-        // var result = (Math.random() > .95) ? 1 : 0
-        var result = Alarm ? 1 : 0
-        res.set('Content-Type', 'text/JSON');
-        res.send(result.toString())
-    });
+                            var tags = []
+                            if (err) throw err
 
-    app.get('/api/random/', function(req, res) {
-        var result = (Math.random() > .5) ? 1 : 0
-            // var result = Alarm ? 1 : 0
-        res.set('Content-Type', 'text/JSON');
-        res.send(result.toString())
-    });
+                            docs.each(function(err, tagdoc) {
 
-    app.put('/api/upload/:filename', function(req, res, next) {
-        var filename = req.params.filename
+                                if (tagdoc !== null) {
+                                    tags.push(tagdoc)
+                                } else {
 
-        var body = new Buffer('');
-        filePath = __dirname + '/public/tmp/' + AlarmEvent + "-" + filename;
-        req.on('data', function(data) {
-            body = Buffer.concat([body, data])
-        });
+                                    var retObj = {
+                                        UID: UID,
+                                        name: doc.name,
+                                        tagInfo: tags
+                                    }
 
-        req.on('end', function() {
-            console.log('writing' + filePath)
-            fs.writeFile(filePath, body.toString("binary"), {
-                encoding: 'binary'
-            }, function() {
-                res.end();
+                                    res.send(JSON.stringify(retObj));
+
+                                }
+                            })
+                        })
+                    }
+                })
+
             });
-        });
 
-    })
 
-    function buildGif() {
-        var encoder = new GIFEncoder(640, 480);
-        console.log("building gif: " + AlarmEvent)
-        pngFileStream('./public/tmp/' + AlarmEvent + '-*.png')
-            .pipe(encoder.createWriteStream({
-                repeat: 0,
-                delay: 250,
-                quality: 10
-            }))
-            .pipe(fs.createWriteStream('./public/events/' + AlarmEvent + '.gif'));
-    }
+            app.get('/api/getLocationInfo/', function(req, res) {
+                //this is faked right now because we only have one location.
+                //it should return an array of all locations.
+                tagCollection.count({
+                        "state.location": "1"
+                    },
+                    function(err, count) {
 
-    app.get('/gallery', function(req, res) {
-        fs.readdir('./public/events', (err, data) => {
-            if (err) throw err;
-            var retStr = '<html><head><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous"></head><body><div class="container-fluid"><div class="row">'
-            data.reverse()
-            data.forEach(fileName => {
-                var timestamp = fileName.split('.')[0];
-                // console.log(timestamp)
-                date = new Date(timestamp)
-                timeString = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + " " + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+                        if (err) throw err
 
-                retStr += `<div class='col-md-4' class='galleryCard'>
+                        res.set('Content-Type', 'text/JSON');
+                        res.send(JSON.stringify([{
+                            "locationid": 1,
+                            occupancy: count,
+                            capacity: 1
+                        }]))
+                    })
+            });
+
+            app.get('/api/shouldAlarm/', function(req, res) {
+                // var result = (Math.random() > .95) ? 1 : 0
+                var result = Alarm ? 1 : 0
+                res.set('Content-Type', 'text/JSON');
+                res.send(result.toString())
+            });
+
+            app.get('/api/random/', function(req, res) {
+                var result = (Math.random() > .5) ? 1 : 0
+                    // var result = Alarm ? 1 : 0
+                res.set('Content-Type', 'text/JSON');
+                res.send(result.toString())
+            });
+
+            app.put('/api/upload/:filename', function(req, res, next) {
+                var filename = req.params.filename
+
+                var body = new Buffer('');
+                filePath = __dirname + '/public/tmp/' + AlarmEvent + "-" + filename;
+                req.on('data', function(data) {
+                    body = Buffer.concat([body, data])
+                });
+
+                req.on('end', function() {
+                    console.log('writing' + filePath)
+                    fs.writeFile(filePath, body.toString("binary"), {
+                        encoding: 'binary'
+                    }, function() {
+                        res.end();
+                    });
+                });
+
+            })
+
+            function buildGif() {
+                var encoder = new GIFEncoder(640, 480);
+                console.log("building gif: " + AlarmEvent)
+                pngFileStream('./public/tmp/' + AlarmEvent + '-*.png')
+                    .pipe(encoder.createWriteStream({
+                        repeat: 0,
+                        delay: 250,
+                        quality: 10
+                    }))
+                    .pipe(fs.createWriteStream('./public/events/' + AlarmEvent + '.gif'));
+            }
+
+            app.get('/gallery', function(req, res) {
+                fs.readdir('./public/events', (err, data) => {
+                    if (err) throw err;
+                    var retStr = '<html><head><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous"></head><body><div class="container-fluid"><div class="row">'
+                    data.reverse()
+                    data.forEach(fileName => {
+                        var timestamp = fileName.split('.')[0];
+                        // console.log(timestamp)
+                        date = new Date(timestamp)
+                        timeString = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + " " + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+
+                        retStr += `<div class='col-md-4' class='galleryCard'>
                                 <img style='width: 100%;' src='/events/${fileName}'>
                                 <h4 style='width: 100%;'>Event from ${timeString}</h4> 
                            </div>`
+                    })
+                    res.set('Content-Type', 'text/HTML');
+                    res.send(retStr)
+                });
             })
-            res.set('Content-Type', 'text/HTML');
-            res.send(retStr)
-        });
-    })
 
-    app.use('/', express.static(path.join(__dirname, 'public')));
+            app.use('/', express.static(path.join(__dirname, 'public')));
 
-    var server = app.listen(port, () => {
+            var server = app.listen(port, () => {
 
-        var host = server.address().address;
-        var port = server.address().port;
+                var host = server.address().address;
+                var port = server.address().port;
 
-        console.log('CycleSentry listening at http://%s:%s', host, port);
-        done()
-    });
-};
+                console.log('CycleSentry listening at http://%s:%s', host, port);
+                done()
+            });
+        };
 
-module.exports = start;
+        module.exports = start;
