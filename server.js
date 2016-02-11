@@ -90,6 +90,7 @@ var createServer = function(port, done) {
                 }, function(err, newtagDoc) {
                     if (newtagDoc.state.location === '1')
                         return
+
                     if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob")
                         return;
                     else {
@@ -144,7 +145,7 @@ var createServer = function(port, done) {
                         })
 
                     }
-                }
+                })
 
             }
 
