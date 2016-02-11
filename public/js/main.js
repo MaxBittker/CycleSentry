@@ -15,6 +15,9 @@ $('#addTag').click(function() {
     var UID = $('#tagUIDInput').val()
     var TID = $('#tagIDInput').val()
     var type = $('#typeSelect').val()
+    var PW = $('#pwInput').val()
+    if(PW !=="validation")
+        return  
     if (TID === "") {
         console.log("filling TID from server")
         TID = "XXX"

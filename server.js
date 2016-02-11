@@ -182,7 +182,7 @@ var createServer = function(port, done) {
                 var id = req.params.UID.toString();
                 var name = req.params.name.toString();
                 var pword = req.params.password.toString();
-
+                if(pword!=="validation")
                 // Insert a single document
                 // console.log(name);
                 var pnumber = "123456789"
