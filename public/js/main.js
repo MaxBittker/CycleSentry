@@ -67,7 +67,8 @@ function updateData() {
 
     $.ajax({
         type: "GET",
-        url: "/api/random",
+        url: "/api/shouldAlarm",
+        // url: "/api/random",
         context: document.body
     }).then(function(data) {
         if (data === 1) {
