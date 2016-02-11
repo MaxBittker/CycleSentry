@@ -72,7 +72,7 @@ var createServer = function(port, done) {
                     setTimeout(() => {
                         activeFobs[tagDoc.UID] = undefined
                     }, activeDuration);
-                } else {
+                } else { //bike case
                     if (activeFobs[tagDoc.UID] && activeFobs[tagDoc.UID].type === "fob") {
                         return;
                     } else if (newState === '-1') {
@@ -88,6 +88,8 @@ var createServer = function(port, done) {
             tagCollection.findOne({
                     TagID: tagDoc.TagID,
                 }, function(err, newtagDoc) {
+                    if (err)
+                        console.log(err)
                     if (newtagDoc.state.location === '1')
                         return
 
@@ -100,7 +102,7 @@ var createServer = function(port, done) {
                             if (Alarm)
                                 buildGif()
                             Alarm = false
-                        }, activeDuration * 1.5);
+                        }, activeDuration * 1.2);
 
                         tagCollection.update({
                             TagID: tagDoc.TagID, //TODO: look into enforcing uniqeness
