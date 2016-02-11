@@ -17,16 +17,21 @@
     color: #d96836;
     background-color: #ecf0f1;
     width: 200px;
-    padding: 0px 5px;
+    /*padding: 0px 5px;*/
     float: right;
     text-align: center;
     -webkit-box-shadow: 0 5px 5px #666;
     -moz-box-shadow: 0 5px 5px #666;
     box-shadow: 0 5px 5px #666;
-    margin-right: 20%;
+    /*margin-right: 20%;*/
 }
 
-#alarmState h1 {}
+#galleryMenu {
+    color: #d96836;
+    width: 200px;
+    float: right;
+    text-align: center;
+}
 
 html {
     color: white;
@@ -35,8 +40,8 @@ html {
     background-color: #ecf0f1;
 }
 
-header span {
-    /*background-color: #749076 !import;*/
+.gallerytag {
+    margin-left: 50px;
 }
 
 .userCard {
@@ -66,7 +71,9 @@ button {
     text-color: #333;
     background-color: #5b725d;
 }
-
+aside{
+    margin-bottom: 20px;
+}
 aside input,
 aside select {
     color: #333;
@@ -85,7 +92,7 @@ a:link {
 /* visited link */
 
 a:visited {
-    color: #333;
+    color: #EEE;
     text-decoration: none;
 }
 
@@ -93,7 +100,7 @@ a:visited {
 /* mouse over link */
 
 a:hover {
-    color: #333;
+    color: #EEE;
     text-decoration: none;
 }
 
@@ -101,7 +108,7 @@ a:hover {
 /* selected link */
 
 a:active {
-    color: #333;
+    color: #EEE;
     text-decoration: none;
 }
 

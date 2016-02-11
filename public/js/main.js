@@ -15,7 +15,7 @@ $('#addTag').click(function() {
     var UID = $('#tagUIDInput').val()
     var TID = $('#tagIDInput').val()
     var type = $('#typeSelect').val()
-    if (TID === ""){
+    if (TID === "") {
         console.log("filling TID from server")
         TID = "XXX"
     }
@@ -82,6 +82,14 @@ function updateData() {
             $('#alarmState').hide()
         }
 
+    });
+
+    $.ajax({
+        type: "GET",
+        url: "/api/getLocationInfo",
+        context: document.body
+    }).then(function(data) {
+        $('#locationInfo').html("<h4> Rack Occupancy</h4> Demo Location: "+data[0].occupancy+'/'+data[0].capacity)
     });
 
 }

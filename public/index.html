@@ -17,6 +17,9 @@
     <div class="header-container">
         <header class="wrapper clearfix">
             <h1 class="title">CycleSentry</h1>
+            <span id='galleryMenu'>
+                   <h2> <a href="gallery"> Incident Gallery</a></h2>
+            </span>
             <span id='alarmState'>
                  <h1> Alarm Active</h1>
             </span>
@@ -32,7 +35,8 @@
             </article>
             <aside>
                 <!-- insert User -->
-                <h3>Add User</h3>
+                <h2>Administration</h2>
+                <h3>Add User:</h3>
                 <p><span class="inputLabel">Name:</span>
                     <input type="text" id="nameInput" name="Name" placeholder="exampleUser">
                 </p>
@@ -44,7 +48,7 @@
                 </p>
                 <button id='addUser'>Add User</button>
                 <!-- insert Tag -->
-                <h3>Add Tag</h3>
+                <h3>Add Tag:</h3>
                 <p><span class="inputLabel">Tag Name:</span>
                     <input type="text" id="tagNameInput" name="tagName" placeholder="my bike">
                 </p>
@@ -63,15 +67,18 @@
                 </p>
                 <button id='addTag'>Add Tag</button>
             </aside>
+            <aside id="locationInfo">
+                
+            </aside>
         </div>
         <!-- #main -->
     </div>
     <!-- #main-container -->
     <div class="footer-container">
         <footer class="wrapper">
-            <h3>CMPE 498    
-            <a href="gallery">security camera images</a>
-            </h3>
+            <h4>Built by:    
+            </h4>
+            <p>Connor MacLean &nbsp;&nbsp;Max Bittker&nbsp;&nbsp; Morgan Williams&nbsp;&nbsp; Ben Brown</p>
         </footer>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
