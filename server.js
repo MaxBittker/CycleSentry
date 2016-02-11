@@ -109,7 +109,7 @@ var createServer = function(port, done) {
                 if (err) throw err
                 else {
                     console.log("tag #" + tagDoc.TagID + "reported stolen at " + Date.now().toString())
-                        //TODO call ben
+
                     var requestData = {
                         "channels": [
                             "uid".concat(tagDoc.UID.toString())
@@ -243,9 +243,9 @@ var createServer = function(port, done) {
             if (err) throw err
 
             if (tagDoc === null && newState === '1') {
-                res.send(0);
-                tagStack.push(TagID)
-                console.log("pushed ID "+tagID + " to stack")
+                res.send('0');
+                tagStack.push(id)
+                console.log("pushed ID "+id + " to stack")
                 return
             }
             if ((newState === '-1') && (tagDoc.state.location === '1')) {
