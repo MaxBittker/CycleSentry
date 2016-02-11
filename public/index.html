@@ -17,27 +17,21 @@
     <div class="header-container">
         <header class="wrapper clearfix">
             <h1 class="title">CycleSentry</h1>
-            <nav>
-                <ul>
-                    <!-- <li><a href="#">nav ul li a</a></li> -->
-                    <!-- <li><a href="#">nav ul li a</a></li> -->
-                    <!-- <li><a href="#">nav ul li a</a></li> -->
-                </ul>
-            </nav>
+            <span id='alarmState'>
+                 <h1> Alarm Active</h1>
+            </span>
         </header>
     </div>
     <div class="main-container">
         <div class="main wrapper clearfix">
             <article>
                 <header>
-                    <h2>Users:</h2>
                     <!-- <h4>Name  Signed in</h4> -->
                     <div id='data'></div>
                 </header>
             </article>
             <aside>
                 <!-- insert User -->
-
                 <h3>Add User</h3>
                 <p><span class="inputLabel">Name:</span>
                     <input type="text" id="nameInput" name="Name" placeholder="exampleUser">
@@ -57,12 +51,12 @@
                 <p><span class="inputLabel">User ID:</span>
                     <input type="text" id="tagUIDInput" name="Name" placeholder="12345">
                 </p>
-                    <p><span class="inputLabel">Tag ID:</span>
-                        <input type="text" id="tagIDInput" name="UID" placeholder="09876">
-                    </p>
+                <p><span class="inputLabel">Tag ID:</span>
+                    <input type="text" id="tagIDInput" name="UID" placeholder="09876">
+                </p>
                 <p>
-                <span class="inputLabel">Type:</span>
-                    <select  id="typeSelect">
+                    <span class="inputLabel">Type:</span>
+                    <select id="typeSelect">
                         <option value="bike">bike</option>
                         <option value="fob">fob</option>
                     </select>
@@ -75,8 +69,9 @@
     <!-- #main-container -->
     <div class="footer-container">
         <footer class="wrapper">
-            <h3>CMPE 498</h3>
+            <h3>CMPE 498    
             <a href="gallery">security camera images</a>
+            </h3>
         </footer>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>

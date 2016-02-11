@@ -348,7 +348,7 @@ var createServer = function(port, done) {
     });
 
     app.get('/api/random/', function(req, res) {
-        var result = (Math.random() > .95) ? 1 : 0
+        var result = (Math.random() > .5) ? 1 : 0
             // var result = Alarm ? 1 : 0
         res.set('Content-Type', 'text/JSON');
         res.send(result.toString())

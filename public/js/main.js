@@ -65,6 +65,20 @@ function updateData() {
         })
     });
 
+    $.ajax({
+        type: "GET",
+        url: "/api/random",
+        context: document.body
+    }).then(function(data) {
+        if (data === 1) {
+            $('#alarmState').show()
+
+        } else{
+            $('#alarmState').hide()
+        }
+
+    });
+
 }
 
 function render(userList, tagInfo) {
