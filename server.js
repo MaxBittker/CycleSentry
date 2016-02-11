@@ -91,8 +91,9 @@ var createServer = function(port, done) {
             Alarm = true;
             AlarmEvent = (new Date()).toISOString();
             setTimeout(() => {
+                if(Alarm)
+                    buildGif()
                 Alarm = false
-                buildGif()
             }, activeDuration * 2);
 
             tagCollection.update({
@@ -235,6 +236,7 @@ var createServer = function(port, done) {
         if (newState === '0') {
             ack = true
             newState = -1
+            Alarm = false
         }
 
         tagCollection.findOne({
