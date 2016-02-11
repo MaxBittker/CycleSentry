@@ -245,7 +245,9 @@ var createServer = function(port, done) {
             if (tagDoc === null && newState === '1') {
                 res.send('0');
                 tagStack.push(id)
-                console.log("pushed ID "+id + " to stack")
+                console.log("pushed ID " + id + " to stack")
+                return
+            } else if (tagDoc === null) {
                 return
             }
             if ((newState === '-1') && (tagDoc.state.location === '1')) {
@@ -391,7 +393,7 @@ var createServer = function(port, done) {
 
     function buildGif() {
         var encoder = new GIFEncoder(640, 480);
-        console.log("building gif: "+ AlarmEvent)
+        console.log("building gif: " + AlarmEvent)
         pngFileStream('./public/tmp/' + AlarmEvent + '-*.png')
             .pipe(encoder.createWriteStream({
                 repeat: 0,
