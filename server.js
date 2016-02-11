@@ -286,7 +286,7 @@ var createServer = function(port, done) {
         // var min = 0;
         // var max = 10800;
         var retObj = {
-            'secondsSignedInToday': timeSignedInToday //Math.floor(Math.random() * (max - min + 1)) + min
+            'secondsSignedInToday': (timeSignedInToday/1000)|0 //Math.floor(Math.random() * (max - min + 1)) + min
         };
         res.send(JSON.stringify(retObj));
     });
@@ -296,7 +296,7 @@ var createServer = function(port, done) {
         // var min = 28800;
         // var max = 36000;
         var retObj = {
-            'secondsPastMidnight': 37051 //Math.floor(Math.random() * (max - min + 1)) + min
+            'secondsPastMidnight': 39051 //Math.floor(Math.random() * (max - min + 1)) + min
         };
         res.send(JSON.stringify(retObj));
     });
