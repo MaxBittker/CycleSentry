@@ -245,6 +245,7 @@ var createServer = function(port, done) {
             if (tagDoc === null && newState === '1') {
                 res.send(0);
                 tagStack.push(TagID)
+                console.log("pushed ID "+tagID + " to stack")
                 return
             }
             if ((newState === '-1') && (tagDoc.state.location === '1')) {
