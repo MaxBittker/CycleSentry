@@ -31,7 +31,7 @@
 .container {
   position: relative;
   width: 100%;
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
   box-sizing: border-box; }
@@ -75,6 +75,9 @@
 
   .one-third.column               { width: 30.6666666667%; }
   .two-thirds.column              { width: 65.3333333333%; }
+  
+  .one-fifth.column               { width: 12%; }
+  .four-fifths.column              { width: 84%; }
 
   .one-half.column                { width: 48%; }
 
