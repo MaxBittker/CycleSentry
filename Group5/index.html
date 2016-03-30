@@ -43,45 +43,56 @@
         <div class="row">
             <div class="one-half column">
                 <h5>
-                    Motivation for the Project
-                </h5>
-                <ul>
-                    <li>High bike theft rate in Kingston deters cycling [1] 
-					<li>Queen’s bike rack placement could be improved with data on usage 
-					<li>Well-integrated Radio-Frequency Identification (RFID) systems can improve daily life 
-				</ul>
-				<h5>
-                    Objectives of the System 
+                    Motivation & Objectives
                 </h5>
 				<ul>
 					<li>Discourage bike theft on Queen’s University
-					<li>Collect useful data on bike rack usage
+					<li>Collect useful data on bike rack utilization rates
 					<li>Explore the feasibility of RFID bike monitoring 
 				</ul>
+				<h5>
+                    Project Overview
+                </h5>
+				<ul>
+					<li>Three main sub-systems:
+					<ul>
+						<li>Hardware: Xbees and Arduinos
+						<li>Server: database and control logic
+						<li>Android App
+					</ul>	
+				</ul>		
 				<h5>
                     Challenges
                 </h5>
 				<ul>
-					<li>Supervisor change resulted in new budget, so only one RFID reader could be purchased
+					<li>Supervisor change led to a budget with room for only one RFID reader
 					<li>Purchased RFID reader:
 						<ul>
 							<li>Range is impractically small (~5 cm)
 							<li>Only detects one tag at a time 
 						</ul>
-				</ul>		
+				</ul>	
 				<h5>
-                    Project Overview
+                    How it Works
                 </h5>
-				Three main sub-systems:
 				<ul>
-					<li>Hardware: Xbees and Arduinos
-					<li>Server: database and control logic
-					<li>Android App
-				</ul>				
+					<li>RFID tags used to "check in" bikes
+					<ul>
+						<li>One tag on the user
+						<li>One tag on their bike
+						<li>Readers on bike racks
+					</ul>	
+					<li>System notifies user if bike goes missing!
+					<li>Statistics collected for the University
+				</ul>						
             </div>
             <div class="one-half column">
-                <img src="assets/f1.jpg" alt="Physical System Layout">
-				<img src="assets/f4.png" alt="Logical System Block Diagram">
+                <br>
+				<br>
+				<img src="assets/f1.jpg" alt="Physical System Layout">
+				<br>
+				<br>
+				<img src="assets/system-diagram-final.png" alt="Final System Block Diagram">
             </div>
         </div>
 		<div class="row">
@@ -112,6 +123,9 @@
 						<li>Custom/non-hobbyist caliber parts 
 					</ul>
 				</ul>
+				
+			</div>
+			<div class="one-half column">
 				<h5>
 					Future Work
 				</h5>
@@ -123,24 +137,16 @@
 					</ul>
 				</ul>
 			</div>
-			<div class="one-half column">
-                <h5>
-					Legal and Ethical Concerns
-				</h5>
-				<ul>
-					<li>Privacy: tracking bike rack arrival/departure times
-					<li>Liability: reckless riding injuries, vigilantism [2] [3]
-					<li>Illegal Uses: thieves using bike rack usage data 
-				</ul>
-				<h5>
-					Possible Integrations
-				</h5>	
-				<ul>
-					<li>Video camera that saves footage of bike rack vicinity for the time period of detected thefts
-					<li>Theft data/notifications sent to Campus Security
-					<li>Kingston Police using RFID scanners to read the tags of recovered stolen bikes
-				</ul>
-			</div>
+		</div>
+		<div class="row">
+			<h5>
+				Possible Integrations
+			</h5>	
+			<ul>
+				<li>Video camera that saves footage of bike rack vicinity for the time period of detected thefts
+				<li>Theft data/notifications sent to Campus Security
+				<li>Kingston Police using RFID scanners to read the tags of recovered stolen bikes
+			</ul>
 		</div>
     </div>
 </body>
